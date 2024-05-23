@@ -91,7 +91,7 @@ img[id='menu_icon']:hover{
 
 .introduction{
     width: calc(100vw - 40px);
-    background: linear-gradient(to top, rgba(27, 18, 18, 0.671)100%, rgba(131, 129, 129, 0.578)100%), url(traffic_2.jpg); 
+    background: linear-gradient(to top, rgba(27, 18, 18, 0.671)100%, rgba(131, 129, 129, 0.578)100%), url(traffic.jpg); 
     background-position: center;
     background-size: cover;
     height: calc(100vh - 100px);
