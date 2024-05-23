@@ -7,17 +7,35 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="navbar">
-        <div class="header">
-            <img id="traffic_icon" src="traffic_icon.png">
-            <p id = 'project_name'><span id="red">SMART</span>
-            <span id="yellow">TRAFFIC</span>
-            <span id="green">LIGHT</span>
-            DEMO</p> 
-        </div>
-        <img id="menu" src="menulogo.png" alt="">
+    <div class="menu">
+        <ul>
+            <li><a href="#">Vehicle Detection</a></li>
+            <li><a href="#">Automatic traffic light control</a></li>
+        </ul>
     </div>
+
     <div class="main">
+        <div class="navbar">
+            <div class="header">
+                <img id="traffic_icon" src="traffic_icon.png">
+                <h1 id="project_name">SMART TRAFFIC LIGHT DEMO</h1>
+            </div>
+            <img id="menu_icon" src="menulogo.jpg" alt="Menu" onclick="show_menu()">
+        </div>
+    
+        <div class="introduction">
+            <div class="content">
+                <h1 id="H1_content">Smart Lights, Smarter Roads: <br>
+                    Revolutionizing Traffic with Computer Vision</h1>
+                <p id="specific_content">Our project uses the DERT model to detect and count traffic vehicles, 
+                    combined with the street width, 
+                    to flexibly adjust traffic light timings in real-time. 
+                    This method allows us to extend or reduce the duration 
+                    of green lights based on actual traffic conditions, 
+                    optimizing traffic flow and effectively reducing congestion.</p>
+            </div>
+        </div>
     </div>
+    <script src="index.js"></script>
 </body>
 </html>
