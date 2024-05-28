@@ -1,0 +1,409 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    margin: 0%;
+}
+
+.main{
+    display: flex;
+    background-color: #070828;
+}
+
+.blank{
+    background-color: #070828;
+    height: 10px;
+}
+.loadingBar{
+    background-color: #070828;
+    height: auto;
+}
+
+.loading_bar{
+    margin-left: 10px;
+    background-color: #EEEEEE;
+    width: auto;
+    height: 10px;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    border-radius: 2px;
+}
+
+.boxselect {
+    margin-left: 10px;
+    width: 270px;
+    height: 100vh;
+    background-color: #EEEEEE;
+    display: flex;
+}
+
+.content{
+    width: auto;
+    height: auto;
+    margin: auto;
+
+}
+
+.content h2{
+    color: black;
+}
+
+.content p{
+    font-size: 13px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+p[id='first_range']{
+    font-size: 11px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.personRange{
+    font-size: 11px;
+    display: flex;
+    margin: 0px;
+}
+
+.faceRange{
+    font-size: 11px;
+    display: flex;
+    margin: 0px;
+
+}
+
+.genderRange{
+    font-size: 11px;
+    display: flex;
+    margin: 0px;
+
+}
+
+.ageRange{
+    font-size: 11px;
+    display: flex;
+    margin: 0px;
+
+}
+
+p[id='placeholderText3']{
+    font-size: 11px;
+    margin: auto;
+}
+
+p[id='placeholderText4']{
+    font-size: 11px;
+    margin: auto;
+}
+
+p[id='placeholderText5']{
+    font-size: 11px;
+    margin: auto;
+}
+
+input[id='personRange']{
+    width: 85%;
+    height: 9px;
+    margin-top: 10px;
+    height: 5px;
+    margin: auto;
+}
+
+input[id='faceRange']{
+    width: 85%;
+    height: 9px;
+    margin-top: 10px;
+    height: 5px;
+    margin: auto;
+}
+
+input[id='genderRange']{
+    width: 85%;
+    height: 9px;
+    margin-top: 10px;
+    height: 5px;
+    margin: auto;
+}
+
+.content span{
+    color: #ffffff;
+    text-shadow: -1px -1px 2px #070828, 1px -1px 2px #070828, -1px 1px 2px #070828, 1px 1px 2px #070828;
+    line-height: 45px;
+}
+.config{
+    font-size: 13.5px;
+}
+
+.browse{
+    border-radius: 5px;
+    border-width: 0px;
+    transition: 0.3s ease-in-out;
+    background-color: white;
+}
+
+.browse:hover{
+    background-color:#EE7621;
+}
+
+label{
+    margin: 0;
+    padding: 5px;
+    font-size: 13px;
+    transition: 0.3s ease-in-out;
+    display: none;
+    width: 80px;
+    text-align: center;
+}
+
+label:hover{
+    color: white;
+}
+
+input[type='file']{
+    display: none;
+}
+
+input[class='chooseOtherfiles']{
+    display: none;
+}
+
+.demo {
+    margin-left: 3px;
+    margin-top: 0px;
+    display: flex;
+    width: 100%;
+}
+
+.demo h1{
+    margin-top: 60px;
+    position: absolute;
+    margin-left: 50px;
+    color: white;
+    text-shadow: -1px -1px 1px rgb(137, 135, 135), 1px -1px 1px rgb(137, 135, 135), -1px 1px 1px rgb(137, 135, 135), 1px 1px 1px rgb(137, 135, 135)
+}
+
+.result{
+    margin: auto;
+    height: 350px;
+    width: 100%;
+    display: flex;
+}
+
+.Input{
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.Input img{
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.Input video{
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.del{
+    margin: auto;
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    background: linear-gradient(to top, rgba(154, 146, 146, 0.8)50%, rgba(154, 146, 146, 0.8)50%);
+    display: none;
+}
+
+.content0 {
+    margin: auto;
+    text-align: center;
+}
+
+input[value='Yes']{
+    border-radius: 5px;
+    border-width: 0px;
+    background-color: #AFD788;
+    transition: 0.2s ease;
+    width: 50px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+input[value='Yes']:hover{
+    background-color: #367517;
+    color: #EEEEEE;
+}
+
+input[value='No']{
+    border-radius: 5px;
+    border-width: 0px;
+    background-color:#EE7C6B    ;
+    transition: 0.2s ease;
+    width: 50px;
+    height: 25px;
+}
+
+input[value='No']:hover{
+    background-color: #B2001F;
+    color: #EEEEEE;
+}
+
+.chooseOtherfiles{
+    border-radius: 5px;
+    border-width: 0px;
+    transition: 0.3s ease-in-out;
+    background-color: white;
+    width: auto;
+    height: 25px;
+    margin-top: 20px;
+}
+
+.chooseOtherfiles:hover{
+    background-color:#EE7621;
+    color: white;
+}
+
+
+.ButtonImage{
+    display: flex;
+    width: calc(100vw - 280px);
+    height: auto;
+    position: absolute;
+    margin-top: 590px;
+}
+
+button[id='ProcessImage']{
+    margin: auto;
+    font-size: 13px;
+    width: auto;
+    height: 30px;
+    border-radius: 5px;
+    border-width: 0px;
+    transition: 0.3s ease-in-out;
+    background-color: #EEEEEE;
+    display: none;
+}
+
+button[id='ProcessImage']:hover{
+    background-color: #EE7621;
+    color: white;
+}
+
+.Output{
+    display: none;
+    height: 100%;
+    width: 50%;
+}
+
+.Output img{
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.Output video{
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.ButtonVideo{
+    display: flex;
+    width: calc(100vw - 280px);
+    height: auto;
+    position: absolute;
+    margin-top: 590px;
+}
+
+button[id='Pause']{
+    margin: auto;
+    font-size: 13px;
+    width: auto;
+    height: 30px;
+    border-radius: 5px;
+    border-width: 0px;
+    transition: 0.3s ease-in-out;
+    background-color: #EEEEEE;
+    display: none;
+    text-align: center;
+
+}
+
+button[id='Pause']:hover{
+    background-color: #EE7621;
+    color: white;
+}
+
+.placeholderText2{
+    margin: 0px;
+}
+
+button[id='ProcessVideo']{
+    margin: auto;
+    font-size: 13px;
+    width: auto;
+    height: 30px;
+    border-radius: 5px;
+    border-width: 0px;
+    transition: 0.3s ease-in-out;
+    background-color: #EEEEEE;
+    display: none;
+}
+
+button[id='ProcessVideo']:hover{
+    background-color: #EE7621;
+    color: white;
+}
+
+.alt{
+    margin: auto;
+    height: auto;
+    width: calc(100vw - 280px);
+    display: none;
+    font-size: 11px;
+    position: absolute;
+    margin-top: 530px;
+}
+
+.Inputtext{
+    height: 100%;
+    width: 50%;
+    text-align: center;
+    margin: auto;
+}
+
+.Outputtext{
+    height: 100%;
+    width: 50%;
+    text-align: center;
+    margin: auto;
+}
+
+.ButtonVideoRealtime{
+    display: flex;
+    width: calc(100vw - 280px);
+    height: auto;
+    position: absolute;
+    margin-top: 590px;
+}
+
+button[id='ProcessVideoRealtime']{
+    margin: auto;
+    font-size: 13px;
+    width: auto;
+    height: 30px;
+    border-radius: 5px;
+    border-width: 0px;
+    transition: 0.3s ease-in-out;
+    background-color: #EEEEEE;
+    display: none;
+}
+
+button[id='ProcessVideoRealtime']:hover{
+    background-color: #EE7621;
+    color: white;
+}
