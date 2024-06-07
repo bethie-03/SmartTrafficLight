@@ -106,7 +106,7 @@ input[id='vehicleRange']{
 }
 
 .browse:hover{
-    background-color:#EE7621;
+    background-color:#070828;
 }
 
 label{
@@ -225,7 +225,7 @@ input[value='No']:hover{
 }
 
 .chooseOtherfiles:hover{
-    background-color:#EE7621;
+    background-color:#070828;
     color: white;
 }
 
@@ -251,7 +251,7 @@ button[id='ProcessImage']{
 }
 
 button[id='ProcessImage']:hover{
-    background-color: #EE7621;
+    background-color: #26274a;
     color: white;
 }
 
@@ -296,7 +296,7 @@ button[id='Pause']{
 }
 
 button[id='Pause']:hover{
-    background-color: #EE7621;
+    background-color: #26274a;
     color: white;
 }
 
@@ -317,8 +317,9 @@ button[id='ProcessVideo']{
 }
 
 button[id='ProcessVideo']:hover{
-    background-color: #EE7621;
+    background-color: #26274a;
     color: white;
+    border-color: white;
 }
 
 .alt{
@@ -368,6 +369,6 @@ button[id='ProcessVideoRealtime']{
 }
 
 button[id='ProcessVideoRealtime']:hover{
-    background-color: #EE7621;
+    background-color: #26274a;
     color: white;
 }
