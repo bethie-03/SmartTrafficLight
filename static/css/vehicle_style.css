@@ -4,11 +4,8 @@
 
 body{
     margin: 0%;
-}
-
-.main{
-    display: flex;
-    background-color: #070828;
+    height: 100vh;
+    width: 100vw;
 }
 
 .blank{
@@ -18,6 +15,7 @@ body{
 .loadingBar{
     background-color: #070828;
     height: auto;
+    width: 100vw;
 }
 
 .loading_bar{
@@ -32,10 +30,17 @@ body{
     border-bottom-right-radius: 2px;
 }
 
+.main{
+    display: flex;
+    background-color: #070828;
+    width: auto;
+    height: calc(100vh - 20px);
+}
+
 .boxselect {
     margin-left: 10px;
     width: 270px;
-    height: 100vh;
+    height: calc(100vh - 20px);
     background-color: #EEEEEE;
     display: flex;
 }
@@ -63,65 +68,20 @@ p[id='first_range']{
     margin-bottom: 5px;
 }
 
-.personRange{
+.vehicleRange{
     font-size: 11px;
     display: flex;
     margin: 0px;
 }
 
-.faceRange{
-    font-size: 11px;
-    display: flex;
-    margin: 0px;
-
-}
-
-.genderRange{
-    font-size: 11px;
-    display: flex;
-    margin: 0px;
-
-}
-
-.ageRange{
-    font-size: 11px;
-    display: flex;
-    margin: 0px;
-
-}
 
 p[id='placeholderText3']{
     font-size: 11px;
     margin: auto;
 }
 
-p[id='placeholderText4']{
-    font-size: 11px;
-    margin: auto;
-}
 
-p[id='placeholderText5']{
-    font-size: 11px;
-    margin: auto;
-}
-
-input[id='personRange']{
-    width: 85%;
-    height: 9px;
-    margin-top: 10px;
-    height: 5px;
-    margin: auto;
-}
-
-input[id='faceRange']{
-    width: 85%;
-    height: 9px;
-    margin-top: 10px;
-    height: 5px;
-    margin: auto;
-}
-
-input[id='genderRange']{
+input[id='vehicleRange']{
     width: 85%;
     height: 9px;
     margin-top: 10px;
@@ -175,7 +135,7 @@ input[class='chooseOtherfiles']{
     margin-left: 3px;
     margin-top: 0px;
     display: flex;
-    width: 100%;
+    width: calc(100vw - 270px);
 }
 
 .demo h1{
@@ -189,14 +149,14 @@ input[class='chooseOtherfiles']{
 .result{
     margin: auto;
     height: 350px;
-    width: 100%;
+    width: calc(100vw - 270px);
     display: flex;
 }
 
 .Input{
     display: flex;
-    height: 100%;
-    width: 100%;
+    height: auto;
+    width: calc(100vw - 270px);
 }
 
 .Input img{
@@ -298,7 +258,7 @@ button[id='ProcessImage']:hover{
 .Output{
     display: none;
     height: 100%;
-    width: 50%;
+    width: calc((100vw - 270px)/2);
 }
 
 .Output img{
@@ -368,7 +328,7 @@ button[id='ProcessVideo']:hover{
     display: none;
     font-size: 11px;
     position: absolute;
-    margin-top: 530px;
+    margin-top: 40%;
 }
 
 .Inputtext{
@@ -376,6 +336,7 @@ button[id='ProcessVideo']:hover{
     width: 50%;
     text-align: center;
     margin: auto;
+    color: white;
 }
 
 .Outputtext{
@@ -383,6 +344,7 @@ button[id='ProcessVideo']:hover{
     width: 50%;
     text-align: center;
     margin: auto;
+    color: white;
 }
 
 .ButtonVideoRealtime{

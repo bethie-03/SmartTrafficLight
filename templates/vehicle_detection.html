@@ -23,19 +23,9 @@
             <div class="content">
                 <h2>AI Model <br> <span>Vehicle Detection</span></h2>
 
-                <p id='first_range'>Select model person detected confidence </p>
-                <div class = 'personRange'>
-                    <div style='margin: auto'>0</div><input type="range" min="0" max="100" step="5" value="0" id="personRange" onchange='updatePlaceholder2()'><p id="placeholderText3">0</p></p>
-                </div>
-
-                <p id='first_range'>Select model face detected confidence </p>
-                <div class = 'faceRange'>
-                    <div style='margin: auto'>0</div><input type="range" min="0" max="100" step="5" value="0" id="faceRange" onchange='updatePlaceholder2()'><p id="placeholderText4">0</p></p>
-                </div>
-
-                <p id='first_range'>Select model gender detected confidence </p>
-                <div class = 'genderRange'>
-                    <div style='margin: auto'>0</div><input type="range" min="0" max="100" step="5" value="0" id="genderRange" onchange='updatePlaceholder2()'><p id="placeholderText5">0</p></p> 
+                <p id='first_range'>Select vehicle detectetion model confidence </p>
+                <div class = 'vehicleRange'>
+                    <div style='margin: auto'>0</div><input type="range" min="0" max="100" step="5" value="0" id="vehicleRange" onchange='updatePlaceholder2()'><p id="placeholderText3">0</p></p>
                 </div>
 
                 <h3>Image/Video Config</h3>
@@ -44,7 +34,6 @@
                     <input type="radio" name="input_type" value="image" onchange="updatePlaceholder()"> Image <br>
                     <input type="radio" name="input_type" value="video" onchange="updatePlaceholder()"> Video <br>
                     <input type="radio" name="input_type" value="video_realtime" onchange="updatePlaceholder()"> Video (Realtime Processing) <br>
-                    <input type="radio" name="input_type" value="webcam" onchange="updatePlaceholder()"> Webcam <br>
                 </div>
 
                 <p id="placeholderText"></p>
