@@ -39,21 +39,27 @@ body{
 
 .boxselect {
     margin-left: 10px;
-    width: 270px;
+    width: 310px;
     height: calc(100vh - 20px);
     background-color: #EEEEEE;
     display: flex;
 }
 
 .content{
-    width: auto;
+    width: 310px;
     height: auto;
     margin: auto;
-
+    padding-left: 7px;
 }
 
 .content h2{
     color: black;
+    line-height: 35px
+}
+
+.content span{
+    color: #ffffff;
+    text-shadow: -1px -1px 2px #070828, 1px -1px 2px #070828, -1px 1px 2px #070828, 1px 1px 2px #070828;
 }
 
 .content p{
@@ -62,64 +68,43 @@ body{
     margin-bottom: 10px;
 }
 
-p[id='first_range']{
-    font-size: 11px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.vehicleRange{
-    font-size: 11px;
-    display: flex;
-    margin: 0px;
+.UserInput{
+    font-size: 13px;
+    width: 300px;
 }
 
 
-p[id='placeholderText3']{
-    font-size: 11px;
-    margin: auto;
+
+.style_for_input{
+    font-size: 12px;
+    width: 20%;
+    height: 20px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    border-radius: 10px;
+    border-color: rgb(228, 220, 220);
+    text-align: center;
 }
 
-
-input[id='vehicleRange']{
-    width: 85%;
-    height: 9px;
-    margin-top: 10px;
-    height: 5px;
-    margin: auto;
-}
-
-.content span{
-    color: #ffffff;
-    text-shadow: -1px -1px 2px #070828, 1px -1px 2px #070828, -1px 1px 2px #070828, 1px 1px 2px #070828;
-    line-height: 45px;
-}
 .config{
     font-size: 13.5px;
 }
 
 .browse{
+    font-size: 13px;
+    height: 30px;
+    width: 80px;
     border-radius: 5px;
     border-width: 0px;
     transition: 0.3s ease-in-out;
     background-color: white;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 
 .browse:hover{
     background-color:#070828;
-}
-
-label{
-    margin: 0;
-    padding: 5px;
-    font-size: 13px;
-    transition: 0.3s ease-in-out;
-    display: none;
-    width: 80px;
-    text-align: center;
-}
-
-label:hover{
     color: white;
 }
 

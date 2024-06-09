@@ -27,4 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
     VD_selection.addEventListener('click', function() {
         window.location.href = '/VD-template';
     })
+
+    RA_selection.addEventListener('click', function() {
+        window.location.href = '/RA-template';
+    })
 });

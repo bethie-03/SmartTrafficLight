@@ -11,6 +11,10 @@ def home():
 def vehicle_detect():
     return render_template('vehicle_detection.html')
 
+@app.route('/RA-template', methods=["GET"])
+def road_anal():
+    return render_template('road_analysis.html')
+
 @app.route('/process-image', methods=['POST'])
 def process_image():
     if 'image' in request.form:
