@@ -1,4 +1,53 @@
+document.addEventListener('DOMContentLoaded', function() {
+    var dots = document.querySelector('.dots').children;
+
+    for (let i = 0; i < dots.length; i++) {
+        setTimeout(function() {
+            toggleDot(dots[i]);
+        }, i * 300); 
+    }
+});
+
+function toggleDot(dot) {
+    dot.style.background = 'white';
+    increaseMargin(dot, 0); 
+
+    setTimeout(function() {
+        dot.style.background = 'black';
+
+        setTimeout(function() {
+            toggleDot(dot);
+        }, 1000);
+    }, 300); 
+}
+
+function increaseMargin(dot, count) {
+    if (count < 10) {
+        let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
+        dot.style.marginBottom = `${currentMargin + 1}px`;
+
+        setTimeout(function() {
+            increaseMargin(dot, count + 1);
+        }, 30); 
+    } else {
+        decreaseMargin(dot, 10);
+    }
+}
+
+function decreaseMargin(dot, count) {
+    if (count > 0) {
+        let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
+        dot.style.marginBottom = `${currentMargin - 1}px`;
+
+        setTimeout(function() {
+            decreaseMargin(dot, count - 1);
+        }, 30); 
+    }
+}
+
+
 var del = document.querySelector('.del');
+var dots = document.querySelector('.dots');
 var Input = document.querySelector('.Input');
 var Output = document.querySelector('.Output');
 var yesclick = true;
@@ -6,11 +55,11 @@ var chooseAnotherFile = document.querySelector('.chooseOtherfiles')
 var buttonfileUpload = document.querySelector('.browse')
 var placeholderText = document.getElementById("placeholderText");
 var pause=false;
+var processing_dots = document.querySelector('.processing_dots')
 var buttonPause =  document.getElementById('Pause')
 var buttonProcessImage = document.getElementById('ProcessImage')
 var buttonProcessVideo = document.getElementById('ProcessVideo')
 var buttonProcessVideoRealtime = document.getElementById('ProcessVideoRealtime')
-var loadingBar = document.querySelector(".loading_bar");
 var placeholderTextVehicle = document.getElementById("placeholderText3");
 var alt = document.querySelector('.alt')
 var altInput = document.querySelector('.Inputtext')
@@ -18,7 +67,6 @@ var altOutput = document.querySelector('.Outputtext')
 var vehicleRange = document.querySelector('.vehicleRange');
 var text = document.createElement('p')
 text.id = 'persontext'
-//PersonRange.appendChild(text)
 
 function updatePlaceholder() {
     var fileUpload = document.getElementById("file_upload");
@@ -30,14 +78,6 @@ function updatePlaceholder() {
                 placeholderText.textContent = "Choose an image";
                 fileUpload.accept = "image/*"; 
                 buttonfileUpload.style.display = 'block';
-                /*
-                text.textContent = '(no detect person for image)'
-                text.style.marginTop = '0px'
-                text.style.marginBottom = '5px'
-                text.style.fontSize = '11px'
-                text.style.fontStyle = 'italic'
-                */
-                //text.style.display = 'block'
                 break;
             case "video":
                 placeholderText.textContent = "Choose a video";
@@ -117,7 +157,6 @@ function uploadImage() {
         var fileInput = document.getElementById('file_upload')
         var selectedOption = document.querySelector('input[name=input_type]:checked');
         var buttonfileUpload = document.querySelector('.browse')
-        loadingBar.style.width = "0%";
         var reader = new FileReader();
         file = fileInput.files[0]
         if (file) {
@@ -142,14 +181,6 @@ function uploadImage() {
                 }
                 Element.src = e.target.result
                 Input.appendChild(Element)
-                loadingBar.style.width = "auto";
-            }
-            reader.onprogress = function(e){
-                if(e.lengthComputable){
-                    var percentLoaded = (e.loaded/e.total)*100;
-                    var percentString = percentLoaded.toString();
-                    loadingBar.style.width = percentString + "%"
-                }
             }
             reader.readAsDataURL(file)
         } else {
@@ -168,11 +199,11 @@ function processImage() {
     var Element = document.createElement('img');
     Element.id='OuputImage'
     Element.title='Detected Image'
-    loadingBar.style.width = "0%";
     var formData = new FormData();
     formData.append('image', imageElement.src);
     formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
-
+    processing_dots.style.display='flex'
+    dots.style.display='flex'
     fetch('/process-image', {
         method: 'POST',
         body: formData
@@ -188,12 +219,14 @@ function processImage() {
         Output.appendChild(Element);
         Input.style.width= "50%";
         Output.style.display='flex';
-        loadingBar.style.width = "auto";
-        alt.style.display = 'flex'
+        alt.style.display = 'flex';
+        processing_dots.style.display='none';
+        dots.style.display='none';
     })
     .catch(error => {
         console.error('Error:', error);
     });
+    
     buttonProcessImage.style.display='none'
     
 }
@@ -203,7 +236,8 @@ function processVideo() {
     var formData = new FormData();
     formData.append('video', vidElement.src);
     formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
-    loadingBar.style.width = "0%";
+    processing_dots.style.display='flex'
+    dots.style.display='flex'
 
     fetch('/process-video', {
         method: 'POST',
@@ -224,12 +258,13 @@ function processVideo() {
         Input.style.width= "50%";
         Output.appendChild(Element);
         Output.style.display = 'flex';
-        loadingBar.style.width = "auto";
         buttonPause.style.display = 'block';
         buttonProcessVideo.style.display = 'none';
         alt.style.display='flex'
         altInput.innerHTML='Default Video'
         altOutput.innerHTML='Detected Video'
+        processing_dots.style.display='none';
+        dots.style.display='none';
     })
     .catch(error => {
         console.error('Error:', error);
@@ -243,7 +278,6 @@ async function processVideoRealtime(){
     formData.append('video', vidElement.src);
     formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
 
-    loadingBar.style.width = "0%";
     var Element = document.createElement('img');
     Element.id = 'OutputVideo';
     Element.title = 'Detected Video';
@@ -252,6 +286,8 @@ async function processVideoRealtime(){
     alt.style.display='flex'
     altInput.innerHTML='Default Video'
     altOutput.innerHTML='Detected Video'
+    processing_dots.style.display='flex'
+    dots.style.display='flex'
 
     const response = await fetch('/process_video_realtime',{
         method : 'POST',
@@ -268,7 +304,8 @@ async function processVideoRealtime(){
         const {value, done} = await reader.read();
         if (done) {
             console.log(value)
-            loadingBar.style.width = "auto";
+            processing_dots.style.display='none';
+            dots.style.display='none';
             break;
         }
         const url = decoder.decode(value)

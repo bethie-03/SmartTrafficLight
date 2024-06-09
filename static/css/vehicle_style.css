@@ -235,7 +235,7 @@ input[value='No']:hover{
     width: calc(100vw - 280px);
     height: auto;
     position: absolute;
-    margin-top: 590px;
+    margin-top: 650px;
 }
 
 button[id='ProcessImage']{
@@ -278,7 +278,7 @@ button[id='ProcessImage']:hover{
     width: calc(100vw - 280px);
     height: auto;
     position: absolute;
-    margin-top: 590px;
+    margin-top: 650px;
 }
 
 button[id='Pause']{
@@ -329,7 +329,7 @@ button[id='ProcessVideo']:hover{
     display: none;
     font-size: 11px;
     position: absolute;
-    margin-top: 40%;
+    margin-top: 650px;
 }
 
 .Inputtext{
@@ -353,7 +353,7 @@ button[id='ProcessVideo']:hover{
     width: calc(100vw - 280px);
     height: auto;
     position: absolute;
-    margin-top: 590px;
+    margin-top: 650px;
 }
 
 button[id='ProcessVideoRealtime']{
@@ -371,4 +371,49 @@ button[id='ProcessVideoRealtime']{
 button[id='ProcessVideoRealtime']:hover{
     background-color: #26274a;
     color: white;
+}
+
+.processing_dots{
+    width: 80px;
+    height: 45px;
+    background: rgb(163, 162, 162);
+    border-radius: 70px;
+    align-items: center;
+    display: none;
+    margin:auto;
+
+}
+
+.dots{
+    width: auto;
+    height: 30px;
+    align-items: center;
+    margin: auto;
+    display: none;
+
+}
+.stdot{
+    width: 10px;
+    height: 10px;
+    background: black;
+    border-radius: 50%;
+    margin-right: 5px;
+    margin-bottom: 0px;
+}
+
+.nddot{
+    width: 10px;
+    height: 10px;
+    background: black;
+    border-radius: 50%;
+    margin-right: 5px;
+    margin-bottom: 0px;
+}
+
+.rddot{
+    width: 10px;
+    height: 10px;
+    background: black;
+    border-radius: 50%;
+    margin-bottom: 0px;
 }
