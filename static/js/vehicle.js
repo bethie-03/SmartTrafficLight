@@ -45,7 +45,6 @@ function decreaseMargin(dot, count) {
     }
 }
 
-
 var del = document.querySelector('.del');
 var dots = document.querySelector('.dots');
 var Input = document.querySelector('.Input');
@@ -67,6 +66,7 @@ var altOutput = document.querySelector('.Outputtext')
 var vehicleRange = document.querySelector('.vehicleRange');
 var text = document.createElement('p')
 text.id = 'persontext'
+
 
 function updatePlaceholder() {
     var fileUpload = document.getElementById("file_upload");
