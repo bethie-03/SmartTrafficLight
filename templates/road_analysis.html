@@ -8,9 +8,11 @@
 </head>
 <body>
     <div class="blank"></div>
+
     <div class="loadingBar">
         <div class="loading_bar"></div>
     </div>
+
     <div class="del">
         <div class="content0">
             <p>You want to demo on other file?</p>
@@ -18,12 +20,14 @@
             <input type="button" name="yes_or_no" value="No" onclick="noClick()">
         </div>
     </div>
+
     <div class="main">
+
         <div class="boxselect">
             <div class="content">
                 <h2>Algorithm for Calculating <br> <span>Vehicle-to-Road Ratio <br> Time to Traffic Light</span></h2>
-
                 <div class = 'UserInput'>
+
                     <div style='display: flex'>
                         <div style='margin: auto;
                                 margin-left: 0px;
@@ -41,6 +45,7 @@
                         <div style='margin: auto;
                                 margin-left: 7px'>km/h</div>    
                     </div>
+
                     <div style='display: flex'>
                         <div style='margin: auto;
                                 margin-left: 0px;
@@ -49,38 +54,36 @@
                         <div style='margin: auto;
                                 margin-left: 7px'>km/h</div>    
                     </div>
+                    
                 </div>
                 <h3>Image Config</h3>
                 <input class="chooseOtherfiles" name="chooseOtherfiles" type="button" value="Choose another file..." onclick="checkFile()">
-                <label for="file_upload" class="browse">Browse files</label>
-                <input type="file" id="file_upload" onchange="uploadImage()">
+                <label for="file_upload" class="browse" >Browse files</label>
+                <input type="file" id="file_upload" onchange="uploadImage()" accept = "image/*">
             </div>
         </div>
+
         <div class="demo">
             <h1>Road Analysis Demo</h1>
+
             <div class="result">
                 <div class="Input">
-                </div>
-                <div class="Output">
+                    <img id = 'InputImage' src =''>
                 </div>
             </div>
+
             <div class="alt">
                 <div class="Inputtext">
-                    Default Image
+                    Before analyse
                 </div>
                 <div class="Outputtext">
-                    Detected Image
+                    After analyse
                 </div>
             </div>
+
             <div class="ButtonImage">
-                <button id="ProcessImage" onclick="processImage()">Process Image</button>
-            </div>
-            <div class="ButtonVideo">
-                <button id="Pause" onclick="pauseVideo()"><p class="placeholderText2">Play</p></button>
-                <button id="ProcessVideo" onclick="processVideo()">Process Video</button>
-            </div>
-            <div class="ButtonVideoRealtime">
-                <button id="ProcessVideoRealtime" onclick="processVideoRealtime()">Process Video Realtime</button>
+                <button id="ProcessImage" onclick="processImage()">Choose lane</button>
+                <button id="RoadAnalyse" onclick="processImage()">Analyse Image</button>
                 <div class="processing_dots">
                     <div class="dots">
                         <div class="stdot">
@@ -91,8 +94,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>    
         </div>
+        
     </div>
     <script src="{{ url_for('static', filename='js/road_analysis.js') }}"></script>
 </body>

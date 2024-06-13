@@ -30,6 +30,50 @@ body{
     border-bottom-right-radius: 2px;
 }
 
+.del{
+    margin: auto;
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    background: linear-gradient(to top, rgba(154, 146, 146, 0.8)50%, rgba(154, 146, 146, 0.8)50%);
+    display: none;
+    z-index: 1000;
+}
+
+.content0 {
+    margin: auto;
+    text-align: center;
+}
+
+input[value='Yes']{
+    border-radius: 5px;
+    border-width: 0px;
+    background-color: #AFD788;
+    transition: 0.2s ease;
+    width: 50px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+input[value='Yes']:hover{
+    background-color: #367517;
+    color: #EEEEEE;
+}
+
+input[value='No']{
+    border-radius: 5px;
+    border-width: 0px;
+    background-color:#EE7C6B    ;
+    transition: 0.2s ease;
+    width: 50px;
+    height: 25px;
+}
+
+input[value='No']:hover{
+    background-color: #B2001F;
+    color: #EEEEEE;
+}
+
 .main{
     display: flex;
     background-color: #070828;
@@ -85,8 +129,20 @@ body{
     text-align: center;
 }
 
-.config{
-    font-size: 13.5px;
+.chooseOtherfiles{
+    border-radius: 5px;
+    border-width: 0px;
+    transition: 0.3s ease-in-out;
+    background-color: white;
+    width: auto;
+    height: 25px;
+    margin-top: 20px;
+    display: none;
+}
+
+.chooseOtherfiles:hover{
+    background-color:#070828;
+    color: white;
 }
 
 .browse{
@@ -111,15 +167,11 @@ input[type='file']{
     display: none;
 }
 
-input[class='chooseOtherfiles']{
-    display: none;
-}
-
 .demo {
     margin-left: 3px;
     margin-top: 0px;
     display: flex;
-    width: calc(100vw - 270px);
+    width: calc(100vw - 320px);
 }
 
 .demo h1{
@@ -132,15 +184,15 @@ input[class='chooseOtherfiles']{
 
 .result{
     margin: auto;
-    height: 350px;
-    width: calc(100vw - 270px);
+    height: 470px;
+    width: calc(100vw - 323px);
     display: flex;
 }
 
 .Input{
     display: flex;
     height: auto;
-    width: calc(100vw - 270px);
+    width: calc(100vw - 310px);
 }
 
 .Input img{
@@ -149,75 +201,37 @@ input[class='chooseOtherfiles']{
     max-height: 100%;
 }
 
-.Input video{
+.alt{
     margin: auto;
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.del{
-    margin: auto;
-    height: 100vh;
-    width: 100%;
+    height: auto;
+    width: calc(100vw - 323px);
+    display: block;
+    font-size: 11px;
     position: absolute;
-    background: linear-gradient(to top, rgba(154, 146, 146, 0.8)50%, rgba(154, 146, 146, 0.8)50%);
-    display: none;
-    z-index: 1000;
+    margin-top: 38%;
 }
 
-.content0 {
-    margin: auto;
+.Inputtext{
+    height: 100%;
+    width: 100%;
     text-align: center;
-}
-
-input[value='Yes']{
-    border-radius: 5px;
-    border-width: 0px;
-    background-color: #AFD788;
-    transition: 0.2s ease;
-    width: 50px;
-    height: 25px;
-    margin-right: 10px;
-}
-
-input[value='Yes']:hover{
-    background-color: #367517;
-    color: #EEEEEE;
-}
-
-input[value='No']{
-    border-radius: 5px;
-    border-width: 0px;
-    background-color:#EE7C6B    ;
-    transition: 0.2s ease;
-    width: 50px;
-    height: 25px;
-}
-
-input[value='No']:hover{
-    background-color: #B2001F;
-    color: #EEEEEE;
-}
-
-.chooseOtherfiles{
-    border-radius: 5px;
-    border-width: 0px;
-    transition: 0.3s ease-in-out;
-    background-color: white;
-    width: auto;
-    height: 25px;
-    margin-top: 20px;
-}
-
-.chooseOtherfiles:hover{
-    background-color:#070828;
+    margin: auto;
     color: white;
+    display: none;
 }
 
+.Outputtext{
+    height: 100%;
+    width: 50%;
+    text-align: center;
+    margin: auto;
+    color: white;
+    display: none;
+}
 
 .ButtonImage{
     display: flex;
-    width: calc(100vw - 280px);
+    width: calc(100vw - 323px);
     height: auto;
     position: absolute;
     margin-top: 40%;
@@ -240,56 +254,7 @@ button[id='ProcessImage']:hover{
     color: white;
 }
 
-.Output{
-    display: none;
-    height: 100%;
-    width: calc((100vw - 270px)/2);
-}
-
-.Output img{
-    margin: auto;
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.Output video{
-    margin: auto;
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.ButtonVideo{
-    display: flex;
-    width: calc(100vw - 280px);
-    height: auto;
-    position: absolute;
-    margin-top: 40%;
-}
-
-button[id='Pause']{
-    margin: auto;
-    font-size: 13px;
-    width: auto;
-    height: 30px;
-    border-radius: 5px;
-    border-width: 0px;
-    transition: 0.3s ease-in-out;
-    background-color: #EEEEEE;
-    display: none;
-    text-align: center;
-
-}
-
-button[id='Pause']:hover{
-    background-color: #26274a;
-    color: white;
-}
-
-.placeholderText2{
-    margin: 0px;
-}
-
-button[id='ProcessVideo']{
+button[id='RoadAnalyse']{
     margin: auto;
     font-size: 13px;
     width: auto;
@@ -301,59 +266,7 @@ button[id='ProcessVideo']{
     display: none;
 }
 
-button[id='ProcessVideo']:hover{
-    background-color: #26274a;
-    color: white;
-    border-color: white;
-}
-
-.alt{
-    margin: auto;
-    height: auto;
-    width: calc(100vw - 280px);
-    display: none;
-    font-size: 11px;
-    position: absolute;
-    margin-top: 40%;
-}
-
-.Inputtext{
-    height: 100%;
-    width: 50%;
-    text-align: center;
-    margin: auto;
-    color: white;
-}
-
-.Outputtext{
-    height: 100%;
-    width: 50%;
-    text-align: center;
-    margin: auto;
-    color: white;
-}
-
-.ButtonVideoRealtime{
-    display: flex;
-    width: calc(100vw - 280px);
-    height: auto;
-    position: absolute;
-    margin-top: 40%;
-}
-
-button[id='ProcessVideoRealtime']{
-    margin: auto;
-    font-size: 13px;
-    width: auto;
-    height: 30px;
-    border-radius: 5px;
-    border-width: 0px;
-    transition: 0.3s ease-in-out;
-    background-color: #EEEEEE;
-    display: none;
-}
-
-button[id='ProcessVideoRealtime']:hover{
+button[id='RoadAnalyse']:hover{
     background-color: #26274a;
     color: white;
 }
