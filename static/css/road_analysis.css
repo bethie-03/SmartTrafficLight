@@ -201,6 +201,15 @@ input[type='file']{
     max-height: 100%;
 }
 
+canvas{
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+    border: 1px solid white;
+    display: none;
+    z-index: 1000;
+}
+
 .alt{
     margin: auto;
     height: auto;

@@ -59,6 +59,7 @@ var altOutput = document.querySelector('.Outputtext')
 var vehicleRange = document.querySelector('.vehicleRange');
 var text = document.createElement('p')
 text.id = 'persontext'
+var InputImage = document.getElementById('InputImage');
 
 
 function updatePlaceholder2(){
@@ -70,7 +71,6 @@ function updatePlaceholder2(){
 }
 
 function yesClick() {
-    var InputImage = document.getElementById('InputImage');
     InputImage.style.display='none';
     yesclick = true;
     buttonProcessImage.style.display='none'
@@ -99,7 +99,6 @@ function checkFile() {
 
 function uploadImage() {
     if (yesclick) {
-        var InputImage = document.getElementById('InputImage');
         var fileInput = document.getElementById('file_upload');
         var buttonfileUpload = document.querySelector('.browse');
         var altInput = document.querySelector('.Inputtext');
@@ -128,8 +127,59 @@ function uploadImage() {
     }
 }
 
-function ChoseLane() {
+function createCircles() {
 
+    circles.push({x: 100, y: 100, radius: radius});
+    circles.push({x: 200, y: 200, radius: radius});
+    circles.push({x: 300, y: 300, radius: radius});
+    circles.push({x: 400, y: 100, radius: radius});
+    drawCircles();
+}
+
+function drawCircles() {
+    const color = ['red', 'green', 'blue', 'purple']
+    for(let i = 0; i < circles.length; i++){
+        ctx.beginPath();
+        ctx.arc(circles[i].x, circles[i].y, circles[i].radius, 0, Math.PI * 2);
+        ctx.fillStyle = color[i];
+        ctx.fill();
+        ctx.stroke();
+    }
+}
+
+function ChoseLane() {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    var circles = [];
+    const radius = 5;
+    const InputImagestyle = window.getComputedStyle(InputImage);
+
+    canvas.width = parseInt(InputImagestyle.width);
+    canvas.height = parseInt(InputImagestyle.height);
+    ctx.drawImage(InputImage, 0, 0, canvas.width, canvas.height);
+    createCircles();
+
+    function createCircles() {
+        circles.push({x: parseInt(InputImagestyle.width)/2 - 20, y: parseInt(InputImagestyle.height)/2 - 20, radius: radius});
+        circles.push({x: parseInt(InputImagestyle.width)/2 + 20, y: parseInt(InputImagestyle.height)/2 - 20, radius: radius});
+        circles.push({x: parseInt(InputImagestyle.width)/2 - 20, y: parseInt(InputImagestyle.height)/2 + 20, radius: radius});
+        circles.push({x: parseInt(InputImagestyle.width)/2 + 20, y: parseInt(InputImagestyle.height)/2 + 20, radius: radius});
+        drawCircles();
+    }
+
+    function drawCircles() {
+        color = ['red', 'bule', 'green', 'purple']
+        circles.forEach(circle => {
+            ctx.beginPath();
+            ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.stroke();
+        });
+    }
+
+    InputImage.style.display='none';
+    canvas.style.display='block'
 }
 
 function processImage() {
