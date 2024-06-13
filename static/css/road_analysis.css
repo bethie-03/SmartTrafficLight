@@ -207,7 +207,6 @@ canvas{
     max-height: 100%;
     border: 1px solid white;
     display: none;
-    z-index: 1000;
 }
 
 .alt{
@@ -231,7 +230,7 @@ canvas{
 
 .Outputtext{
     height: 100%;
-    width: 50%;
+    width: 100%;
     text-align: center;
     margin: auto;
     color: white;

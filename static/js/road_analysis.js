@@ -54,6 +54,7 @@ var chooseAnotherFile = document.querySelector('.chooseOtherfiles')
 var buttonfileUpload = document.querySelector('.browse')
 var processing_dots = document.querySelector('.processing_dots')
 var buttonProcessImage = document.getElementById('ProcessImage')
+var buttonRoadAnalyse = document.getElementById('RoadAnalyse')
 var alt = document.querySelector('.alt')
 var altOutput = document.querySelector('.Outputtext')
 var vehicleRange = document.querySelector('.vehicleRange');
@@ -73,11 +74,13 @@ function updatePlaceholder2(){
 function yesClick() {
     InputImage.style.display='none';
     yesclick = true;
-    buttonProcessImage.style.display='none'
+    buttonProcessImage.style.display='none';
     del.style.display = 'none';
     chooseAnotherFile.style.display='none';
     buttonfileUpload.style.display='flex';
-    alt.style.display='none'
+    alt.style.display='none';
+    canvas.style.display='none';
+    buttonRoadAnalyse.style.display = 'none'
 }
 
 function noClick() {
@@ -127,31 +130,13 @@ function uploadImage() {
     }
 }
 
-function createCircles() {
-
-    circles.push({x: 100, y: 100, radius: radius});
-    circles.push({x: 200, y: 200, radius: radius});
-    circles.push({x: 300, y: 300, radius: radius});
-    circles.push({x: 400, y: 100, radius: radius});
-    drawCircles();
-}
-
-function drawCircles() {
-    const color = ['red', 'green', 'blue', 'purple']
-    for(let i = 0; i < circles.length; i++){
-        ctx.beginPath();
-        ctx.arc(circles[i].x, circles[i].y, circles[i].radius, 0, Math.PI * 2);
-        ctx.fillStyle = color[i];
-        ctx.fill();
-        ctx.stroke();
-    }
-}
-
 function ChoseLane() {
-    const canvas = document.getElementById('canvas');
+    var canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     var circles = [];
     const radius = 5;
+    let selectedCircle = null;
+    let offsetX, offsetY;
     const InputImagestyle = window.getComputedStyle(InputImage);
 
     canvas.width = parseInt(InputImagestyle.width);
@@ -162,37 +147,79 @@ function ChoseLane() {
     function createCircles() {
         circles.push({x: parseInt(InputImagestyle.width)/2 - 20, y: parseInt(InputImagestyle.height)/2 - 20, radius: radius});
         circles.push({x: parseInt(InputImagestyle.width)/2 + 20, y: parseInt(InputImagestyle.height)/2 - 20, radius: radius});
-        circles.push({x: parseInt(InputImagestyle.width)/2 - 20, y: parseInt(InputImagestyle.height)/2 + 20, radius: radius});
         circles.push({x: parseInt(InputImagestyle.width)/2 + 20, y: parseInt(InputImagestyle.height)/2 + 20, radius: radius});
+        circles.push({x: parseInt(InputImagestyle.width)/2 - 20, y: parseInt(InputImagestyle.height)/2 + 20, radius: radius});
         drawCircles();
     }
 
     function drawCircles() {
-        color = ['red', 'bule', 'green', 'purple']
-        circles.forEach(circle => {
+        const color = ['red', 'green', 'blue', 'purple']
+        for(let i = 0; i < circles.length; i++){
             ctx.beginPath();
-            ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'red';
+            ctx.arc(circles[i].x, circles[i].y, circles[i].radius, 0, Math.PI * 2);
+            ctx.fillStyle = color[i];
+            ctx.strokeStyle = 'white'
             ctx.fill();
             ctx.stroke();
+        }
+    }
+
+    function getMousePos(canvas, evt) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: evt.clientX - rect.left,
+            y: evt.clientY - rect.top
+        };
+    }
+
+    function getCircleUnderMouse(x, y) {
+        return circles.find(circle => {
+            return Math.sqrt((circle.x - x) ** 2 + (circle.y - y) ** 2) < radius;
         });
     }
 
+    canvas.addEventListener('mousedown', function(e) {
+        const mousePosition = getMousePos(canvas, e);
+        selectedCircle = getCircleUnderMouse(mousePosition.x, mousePosition.y);
+        if (selectedCircle) {
+            offsetX = mousePosition.x - selectedCircle.x;
+            offsetY = mousePosition.y - selectedCircle.y;
+        }
+    });
+
+    function redraw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(InputImage, 0, 0, canvas.width, canvas.height);
+        drawCircles();
+    }
+
+    canvas.addEventListener('mousemove', function(e) {
+        if (selectedCircle) {
+            const mousePosition = getMousePos(canvas, e);
+            selectedCircle.x = mousePosition.x - offsetX;
+            selectedCircle.y = mousePosition.y - offsetY;
+            redraw();
+        }
+    });
+
+    canvas.addEventListener('mouseup', function() {
+        selectedCircle = null;
+    });
+
     InputImage.style.display='none';
-    canvas.style.display='block'
+    canvas.style.display='block';
+    buttonProcessImage.style.display='none';
+    buttonRoadAnalyse.style.display = 'block';
+
 }
 
 function processImage() {
-    var imageElement = document.getElementById('InputImage');
-    var Element = document.createElement('img');
-    Element.id='OuputImage'
-    Element.title='Detected Image'
     var formData = new FormData();
-    formData.append('image', imageElement.src);
-    formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
+    formData.append('points', circles);
     processing_dots.style.display='flex'
     dots.style.display='flex'
-    fetch('/process-image', {
+
+    fetch('/analyse-image', {
         method: 'POST',
         body: formData
     })
@@ -203,15 +230,20 @@ function processImage() {
         return response.json();
     })
     .then(data => {
-        Element.src = data.result;
-        alt.style.display = 'flex';
+        InputImage.title = 'After analyse';
+        InputImage.src = data.result;
+        InputImage.style.display='block';
+        alt.style.display = 'block';
+        altInput.style.display='none';
+        altOutput.style.display='block';
         processing_dots.style.display='none';
         dots.style.display='none';
+        canvas.style.display = 'none';
     })
     .catch(error => {
         console.error('Error:', error);
     });
     
-    buttonProcessImage.style.display='none'
+    buttonRoadAnalyse.style.display='none'
     
 }
