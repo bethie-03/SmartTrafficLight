@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, Response
 from inference import *
+from road_analysis import *
 
 app = Flask(__name__,static_folder="./static", template_folder="./templates")
 
@@ -40,9 +41,22 @@ def process_video_realtime():
         file = request.form['video']
         vehicle_cfd = request.form['vehicle_cfd']
         host_url = request.host_url
-        print(host_url)
         VD = Vehicle_Detection(float(vehicle_cfd))
         return Response(VD.base64_video_realtime_inference(file, host_url), mimetype='text/event-stream')
-    
+
+@app.route('/analyse-image', methods=['POST'])
+def road_analysis():
+    if 'imagesrc' in request.form:
+        imagesrc = request.form['imagesrc']
+        points = request.form['points']
+        roadLength = request.form['roadLength']
+        motorcycle_speed = request.form['motorcycle_speed']
+        car_speed = request.form['car_speed']
+        motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max = map(float, motorcycle_speed.split(','))
+        car_speed_min, car_speed_average, car_speed_max = map(float, car_speed.split(','))
+        RA = RoadAnalysis(imagesrc, points, roadLength, motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max, car_speed_min, car_speed_average, car_speed_max)
+        result = RA.road_analyse()
+        return {"result": result}
+        
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

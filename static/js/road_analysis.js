@@ -130,10 +130,10 @@ function uploadImage() {
     }
 }
 
+var circles = [];
 function ChoseLane() {
     var canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    var circles = [];
     const radius = 5;
     let selectedCircle = null;
     let offsetX, offsetY;
@@ -213,9 +213,26 @@ function ChoseLane() {
 
 }
 
+function filter_coordinates() {
+    const circles_coordinates = []
+    for (let i = 0; i< circles.length; i++) {
+        circles_coordinates.push([circles[i].x, circles[i].y])
+    }
+    return circles_coordinates
+}
+
 function processImage() {
     var formData = new FormData();
-    formData.append('points', circles);
+    const roadLength = document.getElementById('roadLength')
+    const motorcycle_speed = document.getElementById('motorcycle_speed')
+    const car_speed = document.getElementById('car_speed')
+    const circles_coordinates = filter_coordinates()
+    formData.append('imagesrc', InputImage.src);
+    formData.append('points', circles_coordinates);
+    formData.append('roadLength', roadLength.value);
+    formData.append('motorcycle_speed', motorcycle_speed.value);
+    formData.append('car_speed', car_speed.value);
+
     processing_dots.style.display='flex'
     dots.style.display='flex'
 
@@ -245,5 +262,4 @@ function processImage() {
     });
     
     buttonRoadAnalyse.style.display='none'
-    
 }
