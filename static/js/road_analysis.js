@@ -56,6 +56,7 @@ var processing_dots = document.querySelector('.processing_dots')
 var buttonProcessImage = document.getElementById('ProcessImage')
 var buttonRoadAnalyse = document.getElementById('RoadAnalyse')
 var alt = document.querySelector('.alt')
+var altInput = document.querySelector('.Inputtext');
 var altOutput = document.querySelector('.Outputtext')
 var vehicleRange = document.querySelector('.vehicleRange');
 var text = document.createElement('p')
@@ -104,7 +105,6 @@ function uploadImage() {
     if (yesclick) {
         var fileInput = document.getElementById('file_upload');
         var buttonfileUpload = document.querySelector('.browse');
-        var altInput = document.querySelector('.Inputtext');
 
         var reader = new FileReader();
         file = fileInput.files[0]
@@ -131,8 +131,9 @@ function uploadImage() {
 }
 
 var circles = [];
+var canvas = document.getElementById('canvas');
+
 function ChoseLane() {
-    var canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const radius = 5;
     let selectedCircle = null;
@@ -216,7 +217,7 @@ function ChoseLane() {
 function filter_coordinates() {
     const circles_coordinates = []
     for (let i = 0; i< circles.length; i++) {
-        circles_coordinates.push([circles[i].x, circles[i].y])
+        circles_coordinates.push([circles[i].x/canvas.width, circles[i].y/canvas.height])
     }
     return circles_coordinates
 }
@@ -227,8 +228,13 @@ function processImage() {
     const motorcycle_speed = document.getElementById('motorcycle_speed')
     const car_speed = document.getElementById('car_speed')
     const circles_coordinates = filter_coordinates()
+
     formData.append('imagesrc', InputImage.src);
-    formData.append('points', circles_coordinates);
+    formData.append('top_left', circles_coordinates[0]);
+    formData.append('top_right', circles_coordinates[1]);
+    formData.append('bottom_right', circles_coordinates[2]);
+    formData.append('bottom_left', circles_coordinates[3]);
+
     formData.append('roadLength', roadLength.value);
     formData.append('motorcycle_speed', motorcycle_speed.value);
     formData.append('car_speed', car_speed.value);
@@ -250,16 +256,15 @@ function processImage() {
         InputImage.title = 'After analyse';
         InputImage.src = data.result;
         InputImage.style.display='block';
-        alt.style.display = 'block';
-        altInput.style.display='none';
-        altOutput.style.display='block';
-        processing_dots.style.display='none';
-        dots.style.display='none';
-        canvas.style.display = 'none';
     })
     .catch(error => {
         console.error('Error:', error);
     });
-    
+    alt.style.display = 'block';
+    altInput.style.display='none';
+    altOutput.style.display='block';
+    processing_dots.style.display='none';
+    dots.style.display='none';
+    canvas.style.display = 'none';
     buttonRoadAnalyse.style.display='none'
 }

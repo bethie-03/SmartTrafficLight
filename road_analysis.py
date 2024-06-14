@@ -5,16 +5,17 @@ from configs import *
 import base64
 
 class RoadAnalysis:
-    def __init__(self, base64_image_data, points: list, road_length: float, motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max, car_speed_min, car_speed_average, car_speed_max):
+    def __init__(self, base64_image_data, ratio_points: list, road_length: float, motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max, car_speed_min, car_speed_average, car_speed_max):
         self.model = YOLO(MODEL_PATH)
-        self.image = cv2.imread(base64_image_data)
+        self.image = self.base64_image_inference(base64_image_data)
         self.mask = None
         self.mask_image = None
         self.total_bounding_box_area = 0
         self.road_length = road_length
         
         self.bboxes = []
-        self.points=points #top_left, top_right, bottom_right, bottom_left
+        self.points = self.actual_point(ratio_points) #top_left, top_right, bottom_right, bottom_left
+        print(self.points)
         self.points_array_list = None
 
         self.motorcycle_speed_min = motorcycle_speed_min #km/h
@@ -25,18 +26,27 @@ class RoadAnalysis:
         self.car_speed_average = car_speed_average
         self.car_speed_max = car_speed_max
         
-    def base64_image_inference(self):
-        encoded_data = str(self.image).split(',')[1]
+    def base64_image_inference(self, base64_image_data):
+        encoded_data = str(base64_image_data).split(',')[1]
         nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        self.image = image
-        
+        return image
+    
+    def actual_point(self, ratio_points):
+        actual_points = []
+        height, width, _ = self.image.shape
+        for i in range(len(ratio_points)):
+            x_ratio, y_ratio = ratio_points[i]
+            actual_x = int(width * x_ratio)
+            actual_y = int(height * y_ratio)
+            actual_points.append([actual_x, actual_y])
+        return actual_points
+    
     def convert_array_list(self):
         self.points_array_list = np.array(self.points, np.int32)
         self.points_array_list = self.points_array_list.reshape((-1, 1, 2))
     
     def create_mask_image(self) -> int:
-        self.base64_image_inference()
         height, width, _ = self.image.shape
         self.convert_array_list()
         self.mask = np.zeros((height, width), dtype=np.uint8)
