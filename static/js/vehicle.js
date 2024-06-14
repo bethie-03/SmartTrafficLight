@@ -1,5 +1,37 @@
 document.addEventListener('DOMContentLoaded', function() {
     var dots = document.querySelector('.dots').children;
+    var menu = document.querySelector('.menu');
+    var menuIcon = document.getElementById('menu_icon');
+    var Home_selection = document.getElementById('Home');
+    var RA_selection = document.getElementById('RA');
+    var Demo_selection = document.getElementById('Demo');
+    var click = true
+
+    menuIcon.addEventListener('click', function(event) {
+        if (click){
+            menu.style.display = 'flex';
+            click = false;
+        } else{
+            menu.style.display = 'none';
+            click = true;
+        }
+        event.stopPropagation();
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+            menu.style.display = 'none';
+            click = true;
+        }
+    });
+
+    Home_selection.addEventListener('click', function() {
+        window.location.href = '/';
+    })
+
+    RA_selection.addEventListener('click', function() {
+        window.location.href = '/RA-template';
+    })
 
     for (let i = 0; i < dots.length; i++) {
         setTimeout(function() {

@@ -1,5 +1,37 @@
 document.addEventListener('DOMContentLoaded', function() {
     var dots = document.querySelector('.dots').children;
+    var menu = document.querySelector('.menu');
+    var menuIcon = document.getElementById('menu_icon');
+    var VD_selection = document.getElementById('VD');
+    var Home_selection = document.getElementById('Home');
+    var Demo_selection = document.getElementById('Demo');
+    var click = true
+
+    menuIcon.addEventListener('click', function(event) {
+        if (click){
+            menu.style.display = 'flex';
+            click = false;
+        } else{
+            menu.style.display = 'none';
+            click = true;
+        }
+        event.stopPropagation();
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+            menu.style.display = 'none';
+            click = true;
+        }
+    });
+
+    VD_selection.addEventListener('click', function() {
+        window.location.href = '/VD-template';
+    })
+
+    Home_selection.addEventListener('click', function() {
+        window.location.href = '/';
+    })
 
     for (let i = 0; i < dots.length; i++) {
         setTimeout(function() {
@@ -146,11 +178,11 @@ function ChoseLane() {
     createCircles();
 
     function createCircles() {
-        circles.push({x: parseInt(InputImagestyle.width)/2 - 20, y: parseInt(InputImagestyle.height)/2 - 20, radius: radius});
-        circles.push({x: parseInt(InputImagestyle.width)/2 + 20, y: parseInt(InputImagestyle.height)/2 - 20, radius: radius});
-        circles.push({x: parseInt(InputImagestyle.width)/2 + 20, y: parseInt(InputImagestyle.height)/2 + 20, radius: radius});
-        circles.push({x: parseInt(InputImagestyle.width)/2 - 20, y: parseInt(InputImagestyle.height)/2 + 20, radius: radius});
-        drawCircles();
+        circles.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 - 30, radius: radius});
+        circles.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 - 30, radius: radius});
+        circles.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius});
+        circles.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius});
+        draw();
     }
 
     function drawCircles() {
@@ -163,6 +195,27 @@ function ChoseLane() {
             ctx.fill();
             ctx.stroke();
         }
+    }
+
+    function drawPoly() {
+        ctx.save();
+
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(circles[0].x, circles[0].y)
+        ctx.lineTo(circles[1].x, circles[1].y)
+        ctx.lineTo(circles[2].x, circles[2].y)
+        ctx.lineTo(circles[3].x, circles[3].y)
+        ctx.closePath();
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.globalAlpha = 0.5;
+        ctx.restore();
+    }
+
+    function draw() {
+        drawPoly();
+        drawCircles();
     }
 
     function getMousePos(canvas, evt) {
@@ -191,7 +244,7 @@ function ChoseLane() {
     function redraw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(InputImage, 0, 0, canvas.width, canvas.height);
-        drawCircles();
+        draw();
     }
 
     canvas.addEventListener('mousemove', function(e) {

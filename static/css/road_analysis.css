@@ -30,6 +30,57 @@ body{
     border-bottom-right-radius: 2px;
 }
 
+.menu{
+    position: absolute;
+    right: 10px;
+    top: 70px;
+    background-color: white;
+    width: 250px;
+    height: 100px;
+    border-radius: 10px;
+    display: none;
+}
+
+ul{
+    margin: auto;
+    height: auto;
+    width: auto;
+    padding-left: 0px;
+}
+
+ul li{
+    list-style: none;
+    align-items: center;
+    display: flex;
+    height: 30px;
+    border-radius: 10px;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+ul li:hover{
+    background-color: gray;
+    color: white;
+}
+
+img[id='menu_icon']{
+    height: 40px;
+    border-radius: 5px;
+    filter: invert(100%);
+    transition: 0.2s ease-in-out;
+    cursor: pointer;
+    position: absolute;
+    margin-top: 10px;
+    margin-left: calc(100vw - 50px);
+}
+
+img[id='menu_icon']:hover{
+    filter: none;
+}
+
 .del{
     margin: auto;
     height: 100vh;
@@ -216,7 +267,7 @@ canvas{
     display: block;
     font-size: 11px;
     position: absolute;
-    margin-top: 38%;
+    margin-top: 42%;
 }
 
 .Inputtext{
@@ -242,7 +293,7 @@ canvas{
     width: calc(100vw - 323px);
     height: auto;
     position: absolute;
-    margin-top: 40%;
+    margin-top: 43%;
 }
 
 button[id='ProcessImage']{

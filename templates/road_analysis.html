@@ -13,6 +13,16 @@
         <div class="loading_bar"></div>
     </div>
 
+    <div class="menu">
+        <ul>
+            <li id="Home">Home</li>
+            <li id="VD">Vehicle Detection</li>
+            <li id="Demo">Automatic traffic light control</li>
+        </ul>
+    </div>
+    
+    <img id="menu_icon" src="{{ url_for('static', filename = 'images/menulogo.jpg') }}" alt="Menu">
+    
     <div class="del">
         <div class="content0">
             <p>You want to demo on other file?</p>
@@ -32,7 +42,7 @@
                         <div style='margin: auto;
                                 margin-left: 0px;
                                 margin-right: 7px'>Enter road length:</div>
-                        <input class='style_for_input' type="number" value = '0' id="roadLength">
+                        <input class='style_for_input' type="number" value = '0.1' id="roadLength">
                         <div style='margin: auto;
                                 margin-left: 7px'>km</div>    
                     </div> 
@@ -41,7 +51,7 @@
                         <div style='margin: auto;
                                 margin-left: 0px;
                                 margin-right: 7px'>Enter the minimum, average and <br> maximum speed of motorcycle:</div>
-                        <input class='style_for_input' type="text" id="motorcycle_speed" value = '0, 0, 0'>
+                        <input class='style_for_input' type="text" id="motorcycle_speed" value = '30, 40, 60'>
                         <div style='margin: auto;
                                 margin-left: 7px'>km/h</div>    
                     </div>
@@ -50,7 +60,7 @@
                         <div style='margin: auto;
                                 margin-left: 0px;
                                 margin-right: 7px'>Enter the minimum, average and <br> maximum speed of car:</div>
-                        <input class='style_for_input' type="text" id="car_speed" value = '0, 0, 0'>
+                        <input class='style_for_input' type="text" id="car_speed" value = '20, 30, 40'>
                         <div style='margin: auto;
                                 margin-left: 7px'>km/h</div>    
                     </div>
