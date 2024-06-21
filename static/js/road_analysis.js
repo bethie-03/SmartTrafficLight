@@ -113,7 +113,8 @@ function yesClick() {
     buttonfileUpload.style.display='flex';
     alt.style.display='none';
     canvas.style.display='none';
-    buttonRoadAnalyse.style.display = 'none'
+    buttonRoadAnalyse.style.display = 'none';
+    altOutput.style.display='none';
 }
 
 function noClick() {
@@ -149,6 +150,7 @@ function uploadImage() {
                 buttonProcessImage.style.display='block';
             }
             reader.readAsDataURL(file)
+            fileInput.value = '';
         } else {
             alert('Please choose a file!');
         }
@@ -168,21 +170,31 @@ var canvas = document.getElementById('canvas');
 function ChoseLane() {
     const ctx = canvas.getContext('2d');
     const radius = 5;
+    
     let selectedCircle = null;
     let offsetX, offsetY;
     const InputImagestyle = window.getComputedStyle(InputImage);
 
     canvas.width = parseInt(InputImagestyle.width);
     canvas.height = parseInt(InputImagestyle.height);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(InputImage, 0, 0, canvas.width, canvas.height);
     createCircles();
 
     function createCircles() {
+        if (circles.length == 0){
         circles.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 - 30, radius: radius});
         circles.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 - 30, radius: radius});
         circles.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius});
         circles.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius});
-        draw();
+        } else {
+        circles[0]={x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 - 30, radius: radius};
+        circles[1]={x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 - 30, radius: radius};
+        circles[2]={x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius};
+        circles[3]={x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius};
+        };
+        draw()
     }
 
     function drawCircles() {

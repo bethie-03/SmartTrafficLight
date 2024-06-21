@@ -215,7 +215,8 @@ function uploadImage() {
                     }
                 }
                 Element.src = e.target.result
-                Input.appendChild(Element)
+                Input.appendChild(Element);
+                fileInput.value = '';
             }
             reader.readAsDataURL(file)
         } else {

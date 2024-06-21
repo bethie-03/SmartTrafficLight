@@ -15,7 +15,6 @@ class RoadAnalysis:
         
         self.bboxes = []
         self.points = self.actual_point(ratio_points) #top_left, top_right, bottom_right, bottom_left
-        print(self.points)
         self.points_array_list = None
 
         self.motorcycle_speed_min = motorcycle_speed_min #km/h
@@ -56,18 +55,6 @@ class RoadAnalysis:
     def calculate_total_zone_pixels(self) -> int:
         total_zone_area = cv2.countNonZero(self.mask)
         return total_zone_area
-    
-    def count_black_pixels_in_bounding_boxes(self, x1, y1, x2, y2):
-        black_pixel = 0
-        bounding_box_area = (x2 - x1 + 1) * (y2 - y1 + 1)
-        
-        for x in range(x1,x2):
-            for y in range(y1, y2):
-                pixel_value = self.mask_image[y,x]
-                if np.all(pixel_value==0):
-                    black_pixel+=1 
-                    
-        self.total_bounding_box_area += bounding_box_area - black_pixel
         
     def calculate_intersection_area(self, box1, box2):
         x1_1, y1_1, x2_1, y2_1 = box1
@@ -81,7 +68,7 @@ class RoadAnalysis:
         intersection_area = max(0, x2_i - x1_i + 1) * max(0, y2_i - y1_i + 1)
         return intersection_area
     
-    def count_total_overlap_area(self):
+    '''def count_total_overlap_area(self):
         total_overlap_area = 0
         bboxes = self.bboxes.copy()
         while len(bboxes) > 1:
@@ -90,10 +77,19 @@ class RoadAnalysis:
                 total_overlap_area += intersection_area
             bboxes.pop(0)
             
-        self.total_bounding_box_area -= total_overlap_area
+        self.total_bounding_box_area -= total_overlap_area'''
+        
+    def calculate_total_bounding_box_area(self, image):
+        image = cv2.bitwise_and(image,image, mask=self.mask)
+        height, width, _ = image.shape
+        for y in range(height):
+            for x in range(width):
+                pixel_value = image[y, x]
+                if np.all(pixel_value == [255, 0, 0]):
+                    self.total_bounding_box_area += 1
 
-    def calculate_ratio(self):
-        self.count_total_overlap_area() 
+    def calculate_ratio(self, image):
+        self.calculate_total_bounding_box_area(image) 
         total_zone_area = self.calculate_total_zone_pixels()
         ratio = self.total_bounding_box_area/total_zone_area
         return ratio
@@ -185,10 +181,11 @@ class RoadAnalysis:
                 vehicle_speed = self.car_speed_max
         time = furthest_vehicle_to_light_distance/vehicle_speed
         cv2.rectangle(self.image, (self.bboxes[index][0], self.bboxes[index][1]), (self.bboxes[index][2], self.bboxes[index][3]), (255,0,0), 2)
-        cv2.putText(self.image, f'Time: {int(time*3600)}s', (10,100), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3)
+        cv2.putText(self.image, f'Time: {round(time*3600,2)}s', (10,100), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3)
     
     def road_analyse(self):
         self.convert_array_list() 
+        image = self.image.copy()
         cv2.polylines(self.image, [self.points_array_list], isClosed=True, color=(0, 0, 255), thickness=2)        
         self.create_mask_image()
         results = self.model(self.mask_image)[0]
@@ -198,12 +195,13 @@ class RoadAnalysis:
                 x1, y1, x2, y2 = list(map(int, result[:4])) 
                 class_id = int(result[5])
                 self.bboxes.append([x1,y1,x2,y2, class_id])
-                self.count_black_pixels_in_bounding_boxes(x1, y1, x2, y2)
+                
+                cv2.rectangle(image, (x1,y1), (x2,y2), (255,0,0), -1)
                 
                 cv2.putText(self.image, f'{self.model.names[class_id]}', (x1,y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
                 cv2.rectangle(self.image, (x1,y1), (x2,y2), (0,255,0), 2)
                 
-            ratio = self.calculate_ratio()
+            ratio = self.calculate_ratio(image)
             if ratio <= 0.8:
                 self.calculate_time_for_furthest_vehicle_to_light(ratio)
             cv2.putText(self.image, f'Ratio: {ratio}', (10,50), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3)
