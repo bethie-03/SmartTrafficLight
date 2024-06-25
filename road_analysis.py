@@ -3,6 +3,7 @@ from ultralytics import YOLO
 import numpy as np
 from configs import *
 import base64
+import pickle
 
 class RoadAnalysis:
     def __init__(self, base64_image_data, ratio_points: list, road_length: float, motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max, car_speed_min, car_speed_average, car_speed_max):
@@ -24,6 +25,13 @@ class RoadAnalysis:
         self.car_speed_min = car_speed_min
         self.car_speed_average = car_speed_average
         self.car_speed_max = car_speed_max
+        
+        self.polynomial_reg_model = self.load_regression_model(POLY_REG_MODEL_PATH)
+        
+    def load_regression_model(self, model_path):
+        with open(model_path, 'rb') as file:
+            polynomial_reg_model=pickle.load(file)
+        return polynomial_reg_model
         
     def base64_image_inference(self, base64_image_data):
         encoded_data = str(base64_image_data).split(',')[1]
@@ -158,7 +166,7 @@ class RoadAnalysis:
             actual_speed = v_average + ((v_max - v_average) * ratio_deviation_percentage)
         else:
             return v_average
-        return actual_speed
+        return actual_speed   
 
     def calculate_time_for_furthest_vehicle_to_light(self, ratio):
         road_height, furthest_vehicle_to_light_height , index = self.find_furthest_vehicle_position()
@@ -181,8 +189,27 @@ class RoadAnalysis:
                 vehicle_speed = self.car_speed_max
         time = furthest_vehicle_to_light_distance/vehicle_speed
         cv2.rectangle(self.image, (self.bboxes[index][0], self.bboxes[index][1]), (self.bboxes[index][2], self.bboxes[index][3]), (255,0,0), 2)
-        cv2.putText(self.image, f'Time: {round(time*3600,2)}s', (10,100), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3)
+        cv2.putText(self.image, f'Furthest vehicle to light time: {round(time*3600,2)}s', (10,100), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3)
+        
+    def count_label(self, ratio):
+        input_value = [round(ratio,2),0,0,0,0] #Ratio	Motorcycle count	Car count	Bus count	Truck count	
+        for box in self.bboxes:
+            if box[4] == 0:
+                input_value[3] += 1
+            elif box[4] == 3:
+                input_value[1] += 1
+            elif box[4] == 4:
+                input_value[2] += 1
+            else:
+                input_value[4] += 1
+        return input_value
     
+    def predict_green_light_time(self, ratio):
+        input_value = self.count_label(ratio)
+        input_value_array = np.array([input_value])
+        green_light_time = np.round(self.polynomial_reg_model.predict(input_value_array),2)
+        return input_value, green_light_time
+            
     def road_analyse(self):
         self.convert_array_list() 
         image = self.image.copy()
@@ -202,14 +229,15 @@ class RoadAnalysis:
                 cv2.rectangle(self.image, (x1,y1), (x2,y2), (0,255,0), 2)
                 
             ratio = self.calculate_ratio(image)
+            input_value, green_light_time = self.predict_green_light_time(ratio)
             if ratio <= 0.8:
                 self.calculate_time_for_furthest_vehicle_to_light(ratio)
-            cv2.putText(self.image, f'Ratio: {ratio}', (10,50), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3)
-                
+            cv2.putText(self.image, f'Green Light Time: {green_light_time[0]}s', (10,50), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3)
+                            
         else:
             cv2.putText(self.image, f'NO DETECTION', (10,50), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3) 
             
         _, buffer = cv2.imencode('.jpg', self.image)
         jpg_as_text = base64.b64encode(buffer)
-        return f"data:image/jpeg;base64,{jpg_as_text.decode('utf-8')}"
+        return f"data:image/jpeg;base64,{jpg_as_text.decode('utf-8')}", input_value, green_light_time
 

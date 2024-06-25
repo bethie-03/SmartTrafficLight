@@ -41,14 +41,14 @@ body{
     display: none;
 }
 
-ul{
+.menu ul{
     margin: auto;
     height: auto;
     width: auto;
     padding-left: 0px;
 }
 
-ul li{
+.menu ul li{
     list-style: none;
     align-items: center;
     display: flex;
@@ -61,7 +61,7 @@ ul li{
     padding-right: 5px;
 }
 
-ul li:hover{
+.menu ul li:hover{
     background-color: gray;
     color: white;
 }
@@ -252,12 +252,37 @@ input[type='file']{
     max-height: 100%;
 }
 
+.Input ul{
+    margin: auto;
+    display: none;
+    background-color: #EEEEEE;
+    border-radius: 10px;
+    padding-left: 20px;
+    padding-right: 10px;
+    padding-bottom: 0px;
+    padding-top: 10px;
+}
+
+.Input ul li{
+    align-items: center;
+    display: list-item;
+    height: 25px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+li[id = "Green_light_time"]{
+    list-style: none;
+    font-weight: bold;
+}
+
 canvas{
     margin: auto;
     max-width: 100%;
     max-height: 100%;
     border: 1px solid white;
     display: none;
+    z-index: 1000;
 }
 
 .alt{
@@ -267,7 +292,6 @@ canvas{
     display: block;
     font-size: 11px;
     position: absolute;
-    margin-top: 42%;
 }
 
 .Inputtext{
@@ -293,7 +317,6 @@ canvas{
     width: calc(100vw - 323px);
     height: auto;
     position: absolute;
-    margin-top: 43%;
 }
 
 button[id='ProcessImage']{

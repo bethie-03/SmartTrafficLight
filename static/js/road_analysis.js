@@ -147,7 +147,6 @@ function uploadImage() {
                 InputImage.title = 'Before analyse';
                 InputImage.src = e.target.result;
                 InputImage.style.display='block';
-                buttonProcessImage.style.display='block';
             }
             reader.readAsDataURL(file)
             fileInput.value = '';
@@ -155,7 +154,15 @@ function uploadImage() {
             alert('Please choose a file!');
         }
 
-        alt.style.display='block';
+        InputImage.addEventListener('load', function(){
+            const Imagerect = InputImage.getBoundingClientRect();
+            alt.style.marginTop = (Imagerect.bottom) + 'px';
+            buttonProcessImage.style.marginTop = (Imagerect.bottom + 20) + 'px';
+            buttonRoadAnalyse.style.marginTop = (Imagerect.bottom + 20) + 'px';
+            alt.style.display='block';
+            buttonProcessImage.style.display='block';
+        })
+
         altInput.style.display='block';
         chooseAnotherFile.style.display='block';
         buttonfileUpload.style.display='none';
@@ -170,9 +177,12 @@ var canvas = document.getElementById('canvas');
 function ChoseLane() {
     const ctx = canvas.getContext('2d');
     const radius = 5;
+    const texts = []
+    const color = ['red', 'green', 'blue', 'purple']
     
-    let selectedCircle = null;
+    let selectedCircleIndex, selectedCircle, selectedText = null;
     let offsetX, offsetY;
+    
     const InputImagestyle = window.getComputedStyle(InputImage);
 
     canvas.width = parseInt(InputImagestyle.width);
@@ -180,9 +190,9 @@ function ChoseLane() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(InputImage, 0, 0, canvas.width, canvas.height);
-    createCircles();
+    createCirclesandTexts();
 
-    function createCircles() {
+    function createCirclesandTexts() {
         if (circles.length == 0){
         circles.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 - 30, radius: radius});
         circles.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 - 30, radius: radius});
@@ -194,18 +204,23 @@ function ChoseLane() {
         circles[2]={x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius};
         circles[3]={x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius};
         };
+        texts.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 - 40, content: 'top left'});
+        texts.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 - 40, content: 'top right'});
+        texts.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom left'});
+        texts.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom right'});
         draw()
     }
 
     function drawCircles() {
-        const color = ['red', 'green', 'blue', 'purple']
         for(let i = 0; i < circles.length; i++){
+            ctx.save();
             ctx.beginPath();
             ctx.arc(circles[i].x, circles[i].y, circles[i].radius, 0, Math.PI * 2);
             ctx.fillStyle = color[i];
             ctx.strokeStyle = 'white'
             ctx.fill();
             ctx.stroke();
+            ctx.restore();
         }
     }
 
@@ -225,9 +240,24 @@ function ChoseLane() {
         ctx.restore();
     }
 
+    function writeText() {
+        for(let i = 0; i < texts.length; i++){
+            ctx.save();
+            ctx.beginPath();
+            ctx.font = '15px Arial';
+            ctx.fillStyle = color[i];
+            ctx.fillText(texts[i].content, texts[i].x, texts[i].y);
+            ctx.lineWidth = 0.2;                
+            ctx.strokeStyle = 'black';        
+            ctx.strokeText(texts[i].content, texts[i].x, texts[i].y);
+            ctx.restore();
+        }
+    }
+
     function draw() {
         drawPoly();
         drawCircles();
+        writeText();
     }
 
     function getMousePos(canvas, evt) {
@@ -238,16 +268,19 @@ function ChoseLane() {
         };
     }
 
-    function getCircleUnderMouse(x, y) {
-        return circles.find(circle => {
+    function getCircleIndexUnderMouse(x, y) {
+        return circles.findIndex(circle => {
             return Math.sqrt((circle.x - x) ** 2 + (circle.y - y) ** 2) < radius;
         });
     }
 
     canvas.addEventListener('mousedown', function(e) {
         const mousePosition = getMousePos(canvas, e);
-        selectedCircle = getCircleUnderMouse(mousePosition.x, mousePosition.y);
-        if (selectedCircle) {
+        selectedCircleIndex = getCircleIndexUnderMouse(mousePosition.x, mousePosition.y);
+         
+        if (selectedCircleIndex !== -1) {
+            selectedCircle = circles[selectedCircleIndex]
+            selectedText =  texts[selectedCircleIndex]
             offsetX = mousePosition.x - selectedCircle.x;
             offsetY = mousePosition.y - selectedCircle.y;
         }
@@ -264,17 +297,21 @@ function ChoseLane() {
             const mousePosition = getMousePos(canvas, e);
             selectedCircle.x = mousePosition.x - offsetX;
             selectedCircle.y = mousePosition.y - offsetY;
+            selectedText.x = selectedCircle.x + 10;
+            selectedText.y = selectedCircle.y + 10;
             redraw();
         }
     });
 
     canvas.addEventListener('mouseup', function() {
         selectedCircle = null;
+        selectedText = null;
     });
 
     InputImage.style.display='none';
     canvas.style.display='block';
     buttonProcessImage.style.display='none';
+
     buttonRoadAnalyse.style.display = 'block';
 
 }
@@ -293,6 +330,13 @@ function processImage() {
     const motorcycle_speed = document.getElementById('motorcycle_speed')
     const car_speed = document.getElementById('car_speed')
     const circles_coordinates = filter_coordinates()
+    const dashboard = document.getElementById('dashboard')
+    const Ratio = document.getElementById('Ratio')
+    const motorcycleCount = document.getElementById('Motorcycle_count')
+    const carCount = document.getElementById('Car_count')
+    const busCount = document.getElementById('Bus_count')
+    const truckCount = document.getElementById('Truck_count')
+    const greenLightTime = document.getElementById('Green_light_time')
 
     formData.append('imagesrc', InputImage.src);
     formData.append('top_left', circles_coordinates[0]);
@@ -307,6 +351,7 @@ function processImage() {
     processing_dots.style.display='flex'
     dots.style.display='flex'
 
+
     fetch('/analyse-image', {
         method: 'POST',
         body: formData
@@ -318,14 +363,21 @@ function processImage() {
         return response.json();
     })
     .then(data => {
+        dashboard.style.display = 'block';
         InputImage.title = 'After analyse';
         InputImage.src = data.result;
         InputImage.style.display='block';
+        Ratio.textContent = 'Ratio: ' + data.Ratio
+        motorcycleCount.textContent = 'Motorcycle count: ' + data.Motorcycle_count
+        carCount.textContent = 'Car count: ' + data.Car_count
+        busCount.textContent = 'Bus count: ' + data.Bus_count
+        truckCount.textContent = 'Truck count: ' + data.Truck_count
+        greenLightTime.textContent = "Green Light Time: " + data.Green_light_time + 's'
     })
     .catch(error => {
         console.error('Error:', error);
     });
-    alt.style.display = 'block';
+
     altInput.style.display='none';
     altOutput.style.display='block';
     processing_dots.style.display='none';
