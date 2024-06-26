@@ -34,6 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 
     for (let i = 0; i < dots.length; i++) {
+        dots[i].style.marginBottom = `0px`;
+    }
+
+    for (let i = 0; i < dots.length; i++) {
         setTimeout(function() {
             toggleDot(dots[i]);
         }, i * 300); 
@@ -115,6 +119,7 @@ function yesClick() {
     canvas.style.display='none';
     buttonRoadAnalyse.style.display = 'none';
     altOutput.style.display='none';
+    dashboard.style.display = 'none';
 }
 
 function noClick() {
