@@ -159,13 +159,14 @@ function uploadImage() {
             alt.style.marginTop = (Imagerect.bottom) + 'px';
             buttonProcessImage.style.marginTop = (Imagerect.bottom + 20) + 'px';
             buttonRoadAnalyse.style.marginTop = (Imagerect.bottom + 20) + 'px';
+            processing_dots.style.marginTop=(Imagerect.bottom + 20) + 'px';;
             alt.style.display='block';
-            buttonProcessImage.style.display='block';
         })
 
         altInput.style.display='block';
         chooseAnotherFile.style.display='block';
         buttonfileUpload.style.display='none';
+        buttonProcessImage.style.display='block';
     } else {
         alert('false');
     }
@@ -204,10 +205,10 @@ function ChoseLane() {
         circles[2]={x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius};
         circles[3]={x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 30, radius: radius};
         };
-        texts.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 - 40, content: 'top left'});
-        texts.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 - 40, content: 'top right'});
-        texts.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom left'});
-        texts.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom right'});
+        texts.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 - 40, content: 'top left', width: 0});
+        texts.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 - 40, content: 'top right', width: 0});
+        texts.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom left', width: 0});
+        texts.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom right', width: 0});
         draw()
     }
 
@@ -245,11 +246,13 @@ function ChoseLane() {
             ctx.save();
             ctx.beginPath();
             ctx.font = '15px Arial';
-            ctx.fillStyle = color[i];
+            ctx.fillStyle = 'white';
             ctx.fillText(texts[i].content, texts[i].x, texts[i].y);
             ctx.lineWidth = 0.2;                
-            ctx.strokeStyle = 'black';        
+            ctx.strokeStyle = color[i];        
             ctx.strokeText(texts[i].content, texts[i].x, texts[i].y);
+            texts[i].width = ctx.measureText(texts[i]).width
+            ctx.measureText(text)
             ctx.restore();
         }
     }
@@ -297,8 +300,14 @@ function ChoseLane() {
             const mousePosition = getMousePos(canvas, e);
             selectedCircle.x = mousePosition.x - offsetX;
             selectedCircle.y = mousePosition.y - offsetY;
-            selectedText.x = selectedCircle.x + 10;
-            selectedText.y = selectedCircle.y + 10;
+            if (selectedCircleIndex == 0 || selectedCircleIndex == 1){
+                selectedText.x = selectedCircle.x - selectedText.width / 4;
+                selectedText.y = selectedCircle.y - 10;
+            } else {
+                selectedText.x = selectedCircle.x - selectedText.width / 4;
+                selectedText.y = selectedCircle.y + 20;
+            }
+
             redraw();
         }
     });
@@ -311,7 +320,6 @@ function ChoseLane() {
     InputImage.style.display='none';
     canvas.style.display='block';
     buttonProcessImage.style.display='none';
-
     buttonRoadAnalyse.style.display = 'block';
 
 }
@@ -351,7 +359,6 @@ function processImage() {
     processing_dots.style.display='flex'
     dots.style.display='flex'
 
-
     fetch('/analyse-image', {
         method: 'POST',
         body: formData
@@ -373,6 +380,8 @@ function processImage() {
         busCount.textContent = 'Bus count: ' + data.Bus_count
         truckCount.textContent = 'Truck count: ' + data.Truck_count
         greenLightTime.textContent = "Green Light Time: " + data.Green_light_time + 's'
+        processing_dots.style.display='none';
+        dots.style.display='none';
     })
     .catch(error => {
         console.error('Error:', error);
@@ -380,8 +389,6 @@ function processImage() {
 
     altInput.style.display='none';
     altOutput.style.display='block';
-    processing_dots.style.display='none';
-    dots.style.display='none';
     canvas.style.display = 'none';
     buttonRoadAnalyse.style.display='none'
 }
