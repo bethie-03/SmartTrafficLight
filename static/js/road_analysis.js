@@ -212,8 +212,8 @@ function ChoseLane() {
         };
         texts.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 - 40, content: 'top left', width: 0});
         texts.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 - 40, content: 'top right', width: 0});
-        texts.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom left', width: 0});
-        texts.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom right', width: 0});
+        texts.push({x: parseInt(InputImagestyle.width)/2 + 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom right', width: 0});
+        texts.push({x: parseInt(InputImagestyle.width)/2 - 30, y: parseInt(InputImagestyle.height)/2 + 40, content: 'bottom left', width: 0});
         draw()
     }
 
@@ -350,6 +350,7 @@ function processImage() {
     const busCount = document.getElementById('Bus_count')
     const truckCount = document.getElementById('Truck_count')
     const greenLightTime = document.getElementById('Green_light_time')
+    const furthestVehicleToLightTime =document.getElementById('Furthest_vehicle_to_light_time')
 
     formData.append('imagesrc', InputImage.src);
     formData.append('top_left', circles_coordinates[0]);
@@ -384,7 +385,8 @@ function processImage() {
         carCount.textContent = 'Car count: ' + data.Car_count
         busCount.textContent = 'Bus count: ' + data.Bus_count
         truckCount.textContent = 'Truck count: ' + data.Truck_count
-        greenLightTime.textContent = "Green Light Time: " + data.Green_light_time + 's'
+        greenLightTime.textContent = "Green Light Time estimation: " + data.Green_light_time + 's'
+        furthestVehicleToLightTime.textContent =  "Furthest vehicle to light time estimation: " + data.Furthest_vehicle_to_light_time +'s'
         processing_dots.style.display='none';
         dots.style.display='none';
     })

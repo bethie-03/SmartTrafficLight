@@ -267,14 +267,20 @@ input[type='file']{
 .Input ul li{
     align-items: center;
     display: list-item;
-    height: 25px;
-    border-radius: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     font-size: 13px;
 }
 
 li[id = "Green_light_time"]{
     list-style: none;
     font-weight: bold;
+}
+
+li[id = "Furthest_vehicle_to_light_time"]{
+    list-style: none;
+    font-weight: bold;
+    height: alc(auto+5px);
 }
 
 canvas{

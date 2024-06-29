@@ -112,49 +112,75 @@ class RoadAnalysis:
 
     def find_furthest_vehicle_position(self):
         top_left, top_right, bottom_right, bottom_left = self.points
+
+        height = abs(max(top_left[1], top_right[1]) - max(bottom_left[1], bottom_right[1]))
+        width = abs(max(top_left[0], bottom_left[0]) - max(top_right[0], bottom_right[0]))
+
         road_height = max(bottom_right[1], bottom_left[1]) - max(top_left[1], top_right[1]) + 1
         
         nearest_to_the_top_distances = []
         furthest_to_the_bottom_distances = []
         
-        for box in self.bboxes:
-            distance = max(0, box[1] - max(top_left[1], top_right[1]) + 1)
-            nearest_to_the_top_distances.append(distance)
+        if height > width:
+            for box in self.bboxes:
+                distance = max(0, box[1] - max(top_left[1], top_right[1]) + 1)
+                nearest_to_the_top_distances.append(distance)
+        else:
+            for box in self.bboxes:
+                distance = max(0, box[0] - max(top_left[0], bottom_left[0]) + 1)
+                nearest_to_the_top_distances.append(distance)
             
         indices_of_min_value = self.find_indices_of_min_value(nearest_to_the_top_distances)
                 
         if len(indices_of_min_value) > 1:
-            for index in indices_of_min_value:
-                distance = max(bottom_right[1], bottom_left[1]) - self.bboxes[index][3] + 1
-                furthest_to_the_bottom_distances.append(distance)
+            if height > width:
+                for index in indices_of_min_value:
+                    distance = max(bottom_right[1], bottom_left[1]) - self.bboxes[index][3] + 1
+                    furthest_to_the_bottom_distances.append(distance)
+            else:
+                for index in indices_of_min_value:
+                    distance = max(top_right[0], bottom_right[0]) - self.bboxes[index][2] + 1
+                    furthest_to_the_bottom_distances.append(distance)
             indices_of_max_value = self.find_indices_of_max_value(furthest_to_the_bottom_distances)
             return furthest_to_the_bottom_distances[indices_of_max_value[0]], indices_of_min_value[indices_of_max_value[0]]
         else:
-            furthest_to_the_bottom_distance = max(bottom_right[1], bottom_left[1]) - self.bboxes[indices_of_min_value[0]][3] + 1
+            if height > width:
+                furthest_to_the_bottom_distance = max(bottom_right[1], bottom_left[1]) - self.bboxes[indices_of_min_value[0]][3] + 1
+            else:
+                furthest_to_the_bottom_distance = max(top_right[0], bottom_right[0]) - self.bboxes[indices_of_min_value[0]][2] + 1
             return road_height, furthest_to_the_bottom_distance , indices_of_min_value[0]
     
     def create_front_vehicle_zone(self):
-        _, _, bottom_right, bottom_left = self.points
+        top_left, top_right, bottom_right, bottom_left = self.points
+
+        height = abs(max(top_left[1], top_right[1]) - max(bottom_left[1], bottom_right[1]))
+        width = abs(max(top_left[0], bottom_left[0]) - max(top_right[0], bottom_right[0]))
+
         _, _ , furthest_index = self.find_furthest_vehicle_position()
-        x1, y1, x2, _, _ = self.bboxes[furthest_index]
-        front_zone_box = (x1 - (x2 - x1), y1, x2 + (x2 - x1), max(bottom_right[1], bottom_left[1]))
-        front_zone_height = front_zone_box[3] - front_zone_box[1]
+        x1, y1, x2, y2, _ = self.bboxes[furthest_index]
+        if height > width:
+            front_zone_box = (x1 - (x2 - x1), y2, x2 + (x2 - x1), max(bottom_right[1], bottom_left[1]))
+            front_zone_height = front_zone_box[3] - front_zone_box[1]
+        else:
+            front_zone_box = (x2, y1, max(top_right[0], bottom_left[0]), y2)
+            front_zone_height = front_zone_box[3] - front_zone_box[1]
         cv2.rectangle(self.image, (front_zone_box[0], front_zone_box[1]), (front_zone_box[2], front_zone_box[3]), (255,0,0), 2)
         return front_zone_box, front_zone_height
     
     def check_front_vehicle_appearance(self, furthest_vehicle_y2):
+        check = False
         front_zone_box, front_zone_height = self.create_front_vehicle_zone()
         for box in self.bboxes:
             intersection_area = self.calculate_intersection_area(box[:4], front_zone_box)
             if intersection_area != 0:
-                distance_between_vehicles = box[3] - furthest_vehicle_y2
+                '''distance_between_vehicles = abs(box[3] - furthest_vehicle_y2)
                 ratio_of_distance_to_road_height = distance_between_vehicles / front_zone_height
                 if ratio_of_distance_to_road_height >= 0.5:
                     continue
-                else:
-                    cv2.rectangle(self.image, (box[0], box[1]), (box[2], box[3]), (255,0,0), 2)
-                    return True
-        return False 
+                else:'''
+                cv2.rectangle(self.image, (box[0], box[1]), (box[2], box[3]), (255,0,0), 2)
+                check = True
+        return check 
 
     def calculate_actual_speed(self, v_min, v_average, v_max, ratio):
         ratio_deviation = 0.5 - ratio
@@ -188,8 +214,9 @@ class RoadAnalysis:
             else:
                 vehicle_speed = self.car_speed_max
         time = furthest_vehicle_to_light_distance/vehicle_speed
-        cv2.rectangle(self.image, (self.bboxes[index][0], self.bboxes[index][1]), (self.bboxes[index][2], self.bboxes[index][3]), (255,0,0), 2)
-        cv2.putText(self.image, f'Furthest vehicle to light time: {round(time*3600,2)}s', (10,100), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3)
+        time=round(time*3600,2)
+        cv2.rectangle(self.image, (self.bboxes[index][0], self.bboxes[index][1]), (self.bboxes[index][2], self.bboxes[index][3]), (0,0,255), 2)
+        return time
         
     def count_label(self, ratio):
         input_value = [round(ratio,2),0,0,0,0] #Ratio	Motorcycle count	Car count	Bus count	Truck count	
@@ -231,13 +258,12 @@ class RoadAnalysis:
             ratio = self.calculate_ratio(image)
             input_value, green_light_time = self.predict_green_light_time(ratio)
             if ratio <= 0.8:
-                self.calculate_time_for_furthest_vehicle_to_light(ratio)
-            cv2.putText(self.image, f'Green Light Time: {green_light_time[0]}s', (10,50), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3)
+                time = self.calculate_time_for_furthest_vehicle_to_light(ratio)
                             
         else:
             cv2.putText(self.image, f'NO DETECTION', (10,50), cv2.FONT_HERSHEY_DUPLEX, 1, color=(255,255,255), thickness=3) 
             
         _, buffer = cv2.imencode('.jpg', self.image)
         jpg_as_text = base64.b64encode(buffer)
-        return f"data:image/jpeg;base64,{jpg_as_text.decode('utf-8')}", input_value, green_light_time
+        return f"data:image/jpeg;base64,{jpg_as_text.decode('utf-8')}", input_value, green_light_time, time
 

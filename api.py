@@ -82,14 +82,15 @@ def road_analysis():
         motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max = map(float, motorcycle_speed.split(','))
         car_speed_min, car_speed_average, car_speed_max = map(float, car_speed.split(','))
         RA = RoadAnalysis(imagesrc, ratio_points, float(roadLength), motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max, car_speed_min, car_speed_average, car_speed_max)
-        result, input_value, green_light_time = RA.road_analyse()
+        result, input_value, green_light_time, time = RA.road_analyse()
         return {"result": result, 
                 "Ratio" : input_value[0], 
                 "Motorcycle_count": input_value[1], 
                 "Car_count": input_value[2],
                 "Bus_count": input_value[3], 
                 "Truck_count": input_value[4],
-                "Green_light_time": green_light_time[0]}
+                "Green_light_time": green_light_time[0],
+                "Furthest_vehicle_to_light_time": time}
         
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
