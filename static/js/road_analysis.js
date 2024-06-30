@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var dots = document.querySelector('.dots').children;
     var menu = document.querySelector('.menu');
     var menuIcon = document.getElementById('menu_icon');
     var VD_selection = document.getElementById('VD');
@@ -33,54 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/';
     })
 
-    for (let i = 0; i < dots.length; i++) {
-        dots[i].style.marginBottom = `0px`;
-    }
-
-    for (let i = 0; i < dots.length; i++) {
-        setTimeout(function() {
-            toggleDot(dots[i]);
-        }, i * 300); 
-    }
 });
-
-function toggleDot(dot) {
-    dot.style.background = 'white';
-    increaseMargin(dot, 0); 
-
-    setTimeout(function() {
-        dot.style.background = 'black';
-
-        setTimeout(function() {
-            toggleDot(dot);
-        }, 1000);
-    }, 300); 
-}
-
-function increaseMargin(dot, count) {
-    if (count < 10) {
-        let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
-        dot.style.marginBottom = `${currentMargin + 1}px`;
-
-        setTimeout(function() {
-            increaseMargin(dot, count + 1);
-        }, 30); 
-    } else {
-        decreaseMargin(dot, 10);
-    }
-}
-
-function decreaseMargin(dot, count) {
-    if (count > 0) {
-        let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
-        dot.style.marginBottom = `${currentMargin - 1}px`;
-
-        setTimeout(function() {
-            decreaseMargin(dot, count - 1);
-        }, 30); 
-    }
-}
-
 
 var del = document.querySelector('.del');
 var dots = document.querySelector('.dots');
@@ -91,6 +43,7 @@ var buttonfileUpload = document.querySelector('.browse')
 var processing_dots = document.querySelector('.processing_dots')
 var buttonProcessImage = document.getElementById('ProcessImage')
 var buttonRoadAnalyse = document.getElementById('RoadAnalyse')
+var buttonReProcessImage = document.getElementById('Reprocess')
 var alt = document.querySelector('.alt')
 var altInput = document.querySelector('.Inputtext');
 var altOutput = document.querySelector('.Outputtext')
@@ -98,7 +51,83 @@ var vehicleRange = document.querySelector('.vehicleRange');
 var text = document.createElement('p')
 text.id = 'persontext'
 var InputImage = document.getElementById('InputImage');
+var dotsChildren = document.querySelector('.dots').children;
+var originMargin = parseInt(dotsChildren[0].style.marginBottom, 10) || 0;
+var shouldStop = false;
 
+function resetMargin() {
+    for (let i = 0; i < dotsChildren.length; i++) {
+        dotsChildren[i].style.marginBottom = `${originMargin}px`;
+    }
+}
+
+function processingDots() {
+    shouldStop = false;
+    resetMargin();
+
+    for (let i = 0; i < dotsChildren.length; i++) {
+        setTimeout(function() {
+            if (!shouldStop) {
+                toggleDot(dotsChildren[i]);
+            }
+        }, i * 300); 
+    }
+
+    function toggleDot(dot) {
+        if (shouldStop) return;
+
+        dot.style.background = 'white';
+        increaseMargin(dot, 0);
+
+        setTimeout(function() {
+            if (shouldStop) return;
+
+            dot.style.background = 'black';
+
+            setTimeout(function() {
+                if (!shouldStop) {
+                    toggleDot(dot);
+                }
+            }, 1000);
+        }, 300); 
+    }
+
+    function increaseMargin(dot, count) {
+        if (shouldStop) return;
+        
+        if (count < 10) {
+            let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
+            dot.style.marginBottom = `${currentMargin + 1}px`;
+
+            setTimeout(function() {
+                if (!shouldStop) {
+                    increaseMargin(dot, count + 1);
+                }
+            }, 30); 
+        } else {
+            decreaseMargin(dot, 10);
+        }
+    }
+
+    function decreaseMargin(dot, count) {
+        if (shouldStop) return;
+        
+        if (count > 0) {
+            let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
+            dot.style.marginBottom = `${currentMargin - 1}px`;
+
+            setTimeout(function() {
+                if (!shouldStop) {
+                    decreaseMargin(dot, count - 1);
+                }
+            }, 30); 
+        }
+    }
+}
+
+function stopProcessingDots() {
+    shouldStop = true;
+}
 
 function updatePlaceholder2(){
     var selectedOption1 = document.querySelector('input[id=vehicleRange]');
@@ -118,6 +147,7 @@ function yesClick() {
     alt.style.display='none';
     canvas.style.display='none';
     buttonRoadAnalyse.style.display = 'none';
+    buttonReProcessImage.style.display='none';
     altOutput.style.display='none';
     dashboard.style.display = 'none';
 }
@@ -164,7 +194,8 @@ function uploadImage() {
             alt.style.marginTop = (Imagerect.bottom) + 'px';
             buttonProcessImage.style.marginTop = (Imagerect.bottom + 20) + 'px';
             buttonRoadAnalyse.style.marginTop = (Imagerect.bottom + 20) + 'px';
-            processing_dots.style.marginTop=(Imagerect.bottom + 20) + 'px';;
+            processing_dots.style.marginTop=(Imagerect.bottom + 20) + 'px';
+            buttonReProcessImage.style.marginTop = (Imagerect.bottom + 20) + 'px';
             alt.style.display='block';
         })
 
@@ -337,6 +368,8 @@ function filter_coordinates() {
     return circles_coordinates
 }
 
+var originImage = null
+
 function processImage() {
     var formData = new FormData();
     const roadLength = document.getElementById('roadLength')
@@ -352,7 +385,8 @@ function processImage() {
     const greenLightTime = document.getElementById('Green_light_time')
     const furthestVehicleToLightTime =document.getElementById('Furthest_vehicle_to_light_time')
 
-    formData.append('imagesrc', InputImage.src);
+    originImage = InputImage.src
+    formData.append('imagesrc', originImage);
     formData.append('top_left', circles_coordinates[0]);
     formData.append('top_right', circles_coordinates[1]);
     formData.append('bottom_right', circles_coordinates[2]);
@@ -364,6 +398,8 @@ function processImage() {
 
     processing_dots.style.display='flex'
     dots.style.display='flex'
+
+    processingDots()
 
     fetch('/analyse-image', {
         method: 'POST',
@@ -389,6 +425,8 @@ function processImage() {
         furthestVehicleToLightTime.textContent =  "Furthest vehicle to light time estimation: " + data.Furthest_vehicle_to_light_time +'s'
         processing_dots.style.display='none';
         dots.style.display='none';
+        buttonReProcessImage.style.display='block';
+        stopProcessingDots()
     })
     .catch(error => {
         console.error('Error:', error);
@@ -397,5 +435,66 @@ function processImage() {
     altInput.style.display='none';
     altOutput.style.display='block';
     canvas.style.display = 'none';
-    buttonRoadAnalyse.style.display='none'
+    buttonRoadAnalyse.style.display='none';
+}
+
+function reprocessImage() {
+    var formData = new FormData();
+    const roadLength = document.getElementById('roadLength')
+    const motorcycle_speed = document.getElementById('motorcycle_speed')
+    const car_speed = document.getElementById('car_speed')
+    const circles_coordinates = filter_coordinates()
+    const dashboard = document.getElementById('dashboard')
+    const Ratio = document.getElementById('Ratio')
+    const motorcycleCount = document.getElementById('Motorcycle_count')
+    const carCount = document.getElementById('Car_count')
+    const busCount = document.getElementById('Bus_count')
+    const truckCount = document.getElementById('Truck_count')
+    const greenLightTime = document.getElementById('Green_light_time')
+    const furthestVehicleToLightTime =document.getElementById('Furthest_vehicle_to_light_time')
+
+    formData.append('imagesrc', originImage);
+    formData.append('top_left', circles_coordinates[0]);
+    formData.append('top_right', circles_coordinates[1]);
+    formData.append('bottom_right', circles_coordinates[2]);
+    formData.append('bottom_left', circles_coordinates[3]);
+
+    formData.append('roadLength', roadLength.value);
+    formData.append('motorcycle_speed', motorcycle_speed.value);
+    formData.append('car_speed', car_speed.value);
+
+    processing_dots.style.display='flex'
+    dots.style.display='flex'
+
+    processingDots()
+
+    fetch('/analyse-image', {
+        method: 'POST',
+        body: formData
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        dashboard.style.display = 'block';
+        InputImage.title = 'After analyse';
+        InputImage.src = data.result;
+        InputImage.style.display='block';
+        Ratio.textContent = 'Ratio: ' + data.Ratio
+        motorcycleCount.textContent = 'Motorcycle count: ' + data.Motorcycle_count
+        carCount.textContent = 'Car count: ' + data.Car_count
+        busCount.textContent = 'Bus count: ' + data.Bus_count
+        truckCount.textContent = 'Truck count: ' + data.Truck_count
+        greenLightTime.textContent = "Green Light Time estimation: " + data.Green_light_time + 's'
+        furthestVehicleToLightTime.textContent =  "Furthest vehicle to light time estimation: " + data.Furthest_vehicle_to_light_time +'s'
+        processing_dots.style.display='none';
+        dots.style.display='none';
+        stopProcessingDots()
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }

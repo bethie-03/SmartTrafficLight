@@ -26,12 +26,7 @@ class RoadAnalysis:
         self.car_speed_average = car_speed_average
         self.car_speed_max = car_speed_max
         
-        self.polynomial_reg_model = self.load_regression_model(POLY_REG_MODEL_PATH)
-        
-    def load_regression_model(self, model_path):
-        with open(model_path, 'rb') as file:
-            polynomial_reg_model=pickle.load(file)
-        return polynomial_reg_model
+        self.polynomial_reg_model = POLYNOMIAL_REG_MODEL
         
     def base64_image_inference(self, base64_image_data):
         encoded_data = str(base64_image_data).split(',')[1]
@@ -215,7 +210,7 @@ class RoadAnalysis:
                 vehicle_speed = self.car_speed_max
         time = furthest_vehicle_to_light_distance/vehicle_speed
         time=round(time*3600,2)
-        cv2.rectangle(self.image, (self.bboxes[index][0], self.bboxes[index][1]), (self.bboxes[index][2], self.bboxes[index][3]), (0,0,255), 2)
+        cv2.rectangle(self.image, (self.bboxes[index][0], self.bboxes[index][1]), (self.bboxes[index][2], self.bboxes[index][3]), (0,255,), 2)
         return time
         
     def count_label(self, ratio):
@@ -252,8 +247,10 @@ class RoadAnalysis:
                 
                 cv2.rectangle(image, (x1,y1), (x2,y2), (255,0,0), -1)
                 
-                cv2.putText(self.image, f'{self.model.names[class_id]}', (x1,y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
-                cv2.rectangle(self.image, (x1,y1), (x2,y2), (0,255,0), 2)
+                #cv2.putText(self.image, f'{self.model.names[class_id]}', (x1,y1), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
+                cv2.rectangle(self.image, (x1,y1), (x2,y2), (0,0,255),2)
+                cv2.putText(self.image, f'{class_id}-{round(float(result[4]),2)}', (x1 ,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 5)
+                cv2.putText(self.image, f'{class_id}-{round(float(result[4]),2)}', (x1 ,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 2)
                 
             ratio = self.calculate_ratio(image)
             input_value, green_light_time = self.predict_green_light_time(ratio)
@@ -266,4 +263,3 @@ class RoadAnalysis:
         _, buffer = cv2.imencode('.jpg', self.image)
         jpg_as_text = base64.b64encode(buffer)
         return f"data:image/jpeg;base64,{jpg_as_text.decode('utf-8')}", input_value, green_light_time, time
-
