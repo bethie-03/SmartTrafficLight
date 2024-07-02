@@ -91,4 +91,6 @@ def road_analysis():
                 "Truck_count": input_value[4],
                 "Green_light_time": green_light_time[0],
                 "Furthest_vehicle_to_light_time": time}
-        
+
+if __name__ == "__main__":
+    app.run('0.0.0.0', port=5000)
