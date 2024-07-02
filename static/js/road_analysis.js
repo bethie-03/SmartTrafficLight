@@ -465,6 +465,7 @@ function reprocessImage() {
 
     processing_dots.style.display='flex'
     dots.style.display='flex'
+    buttonReProcessImage.style.display='none';
 
     processingDots()
 
@@ -492,6 +493,7 @@ function reprocessImage() {
         furthestVehicleToLightTime.textContent =  "Furthest vehicle to light time estimation: " + data.Furthest_vehicle_to_light_time +'s'
         processing_dots.style.display='none';
         dots.style.display='none';
+        buttonReProcessImage.style.display='block';
         stopProcessingDots()
     })
     .catch(error => {

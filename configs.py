@@ -1,7 +1,7 @@
 import pickle
+from ultralytics import YOLO
 
 MODEL_PATH = 'source/best.pt'
-
 POLY_REG_MODEL_PATH = 'source/polynomial_regression_model.pkl'
 
 def load_regression_model(model_path):
@@ -10,4 +10,5 @@ def load_regression_model(model_path):
     return polynomial_reg_model
 
 POLYNOMIAL_REG_MODEL = load_regression_model(POLY_REG_MODEL_PATH)
+MODEL = YOLO(MODEL_PATH)
         

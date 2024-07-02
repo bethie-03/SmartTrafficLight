@@ -3,6 +3,7 @@ from inference import *
 from road_analysis import *
 
 app = Flask(__name__,static_folder="./static", template_folder="./templates")
+RA = RoadAnalysis()
 
 @app.route('/', methods=["GET"])
 def home():
@@ -81,8 +82,7 @@ def road_analysis():
         
         motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max = map(float, motorcycle_speed.split(','))
         car_speed_min, car_speed_average, car_speed_max = map(float, car_speed.split(','))
-        RA = RoadAnalysis(imagesrc, ratio_points, float(roadLength), motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max, car_speed_min, car_speed_average, car_speed_max)
-        result, input_value, green_light_time, time = RA.road_analyse()
+        result, input_value, green_light_time, time = RA.road_analyse(imagesrc, ratio_points, float(roadLength), motorcycle_speed_min, motorcycle_speed_average, motorcycle_speed_max, car_speed_min, car_speed_average, car_speed_max)
         return {"result": result, 
                 "Ratio" : input_value[0], 
                 "Motorcycle_count": input_value[1], 
@@ -93,4 +93,4 @@ def road_analysis():
                 "Furthest_vehicle_to_light_time": time}
         
 if __name__=="__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=5000)
