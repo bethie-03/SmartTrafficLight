@@ -92,5 +92,3 @@ def road_analysis():
                 "Green_light_time": green_light_time[0],
                 "Furthest_vehicle_to_light_time": time}
         
-if __name__=="__main__":
-    app.run(host="0.0.0.0", port=5000)
