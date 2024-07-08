@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pygame Stream</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pygame.css') }}">
+</head>
+
+<body>
+    <div class="blank"></div>
+
+    <div class="loadingBar">
+        <div class="loading_bar"></div>
+    </div>
+
+    <div class="menu">
+        <ul>
+            <li id="Home">Home</li>
+            <li id="VD">Vehicle Detection</li>
+            <li id="RA">Road Analysis</li>
+        </ul>
+    </div>
+    
+    <img id="menu_icon" src="{{ url_for('static', filename = 'images/menulogo.jpg') }}" alt="Menu">
+
+    <div class="demo">
+        <img id="pygame-stream" src="/stream_pygame" alt="Pygame Stream">
+    </div>
+
+    <script src= "{{ url_for('static', filename = 'js/pygame.js') }}" ></script>
+</body>
+</html>

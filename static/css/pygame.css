@@ -1,0 +1,97 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    margin: 0%;
+    height: 100vh;
+    width: 100vw;
+}
+
+.blank{
+    background-color: #070828;
+    height: 10px;
+}
+.loadingBar{
+    background-color: #070828;
+    height: auto;
+    width: 100vw;
+}
+
+.loading_bar{
+    margin-left: 10px;
+    background-color: #EEEEEE;
+    width: auto;
+    height: 10px;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.menu{
+    position: absolute;
+    right: 10px;
+    top: 70px;
+    background-color: white;
+    width: 150px;
+    height: 100px;
+    border-radius: 10px;
+    display: none;
+    z-index: 1000;
+}
+
+.menu ul{
+    margin: auto;
+    height: auto;
+    width: auto;
+    padding-left: 0px;
+}
+
+.menu ul li{
+    list-style: none;
+    align-items: center;
+    display: flex;
+    height: 30px;
+    border-radius: 10px;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.menu ul li:hover{
+    background-color: gray;
+    color: white;
+}
+
+img[id='menu_icon']{
+    height: 40px;
+    border-radius: 5px;
+    filter: invert(100%);
+    transition: 0.2s ease-in-out;
+    cursor: pointer;
+    position: absolute;
+    margin-top: 10px;
+    margin-left: calc(100vw - 50px);
+    z-index: 1000;
+}
+
+img[id='menu_icon']:hover{
+    filter: none;
+}
+
+.demo{
+    width: 100vw;
+    height: calc(100vh - 20px);
+    display: flex;
+    background-color: #070828;
+}
+
+img[id = 'pygame-stream']{
+    width: 90%;
+    height: 90%;
+    margin: auto;
+}

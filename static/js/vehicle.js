@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/RA-template';
     })
 
+    Demo_selection.addEventListener('click', function() {
+        window.location.href = '/Pygame-template';
+    })
+    
 });
 
 var del = document.querySelector('.del');

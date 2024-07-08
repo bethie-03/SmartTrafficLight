@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/';
     })
 
+    Demo_selection.addEventListener('click', function() {
+        window.location.href = '/Pygame-template';
+    })
+
 });
 
 var del = document.querySelector('.del');

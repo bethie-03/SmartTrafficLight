@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     var menu = document.querySelector('.menu');
     var menuIcon = document.getElementById('menu_icon');
+    var Home_selection = document.getElementById('Home');
     var VD_selection = document.getElementById('VD');
     var RA_selection = document.getElementById('RA');
-    var Demo_selection = document.getElementById('Demo');
     var click = true
 
     menuIcon.addEventListener('click', function(event) {
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/RA-template';
     })
 
-    Demo_selection.addEventListener('click', function() {
-        window.location.href = '/Pygame-template';
+    Home_selection.addEventListener('click', function() {
+        window.location.href = '/';
     })
 });

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, Response
 from inference import *
 from road_analysis import *
+from pygame_demo import get_pygame_frame
 
 app = Flask(__name__,static_folder="./static", template_folder="./templates")
 RA = RoadAnalysis()
@@ -17,6 +18,10 @@ def vehicle_detect():
 @app.route('/RA-template', methods=["GET"])
 def road_anal():
     return render_template('road_analysis.html')
+
+@app.route('/Pygame-template', methods=["GET"])
+def pygame_demo():
+    return render_template('pygame.html')
 
 @app.route('/process-image', methods=['POST'])
 def process_image():
@@ -94,6 +99,10 @@ def road_analysis():
                 "Truck_count": input_value[4],
                 "Green_light_time": green_light_time[0],
                 "Furthest_vehicle_to_light_time": time}
+    
+@app.route('/stream_pygame')
+def stream_pygame():
+    return Response(get_pygame_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
     app.run('0.0.0.0', port=5000)
