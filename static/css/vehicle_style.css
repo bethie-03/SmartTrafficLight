@@ -288,7 +288,6 @@ input[value='No']:hover{
     width: calc(100vw - 280px);
     height: auto;
     position: absolute;
-    margin-top: 40%;
 }
 
 button[id='ProcessImage']{
@@ -331,7 +330,6 @@ button[id='ProcessImage']:hover{
     width: calc(100vw - 280px);
     height: auto;
     position: absolute;
-    margin-top: 40%;
 }
 
 button[id='Pause']{
@@ -382,7 +380,6 @@ button[id='ProcessVideo']:hover{
     display: none;
     font-size: 11px;
     position: absolute;
-    margin-top: 40%;
 }
 
 .Inputtext{
@@ -391,6 +388,7 @@ button[id='ProcessVideo']:hover{
     text-align: center;
     margin: auto;
     color: white;
+    display: none;
 }
 
 .Outputtext{
@@ -399,6 +397,7 @@ button[id='ProcessVideo']:hover{
     text-align: center;
     margin: auto;
     color: white;
+    display: none;
 }
 
 .ButtonVideoRealtime{
@@ -406,7 +405,6 @@ button[id='ProcessVideo']:hover{
     width: calc(100vw - 280px);
     height: auto;
     position: absolute;
-    margin-top: 40%;
 }
 
 button[id='ProcessVideoRealtime']{

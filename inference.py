@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import tempfile
 import base64
+import os
 
 class Vehicle_Detection:
     def __init__(self):
@@ -17,10 +18,11 @@ class Vehicle_Detection:
                 confidence = result[4]
                 if confidence > vehicle_conf:
                     x1, y1, x2, y2 = list(map(int, result[:4])) 
-                    confidence = result[4]
+                    confidence = round(float(result[4]), 2)
                     class_id = int(result[5])
-                    cv2.putText(image, f'{self.model.names[class_id]}', (x1,y1), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-                    cv2.rectangle(image, (x1,y1), (x2,y2), (255,255,255), 2)
+                    cv2.rectangle(image, (x1,y1), (x2,y2), (0,0,255), 2)
+                    cv2.putText(image, f'{self.model.names[class_id]}-{confidence}', (x1,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 5)
+                    cv2.putText(image, f'{self.model.names[class_id]}-{confidence}', (x1,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
                 else:
                     continue
         return image
@@ -55,7 +57,6 @@ class Vehicle_Detection:
             if not ret:
                 break
             
-
             result_frame = self.image_inference(frame, vehicle_conf)
             out.write(result_frame)
 
@@ -79,17 +80,15 @@ class Vehicle_Detection:
     
     def base64_video_realtime_inference(self, vehicle_conf):
         cap = cv2.VideoCapture('sample_result/base64_video.mp4')
-        id = 0
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
 
             result_frame = self.image_inference(frame, vehicle_conf)
-            cv2.imwrite(f'./static/images/frame_{id}.jpg', result_frame)
-
             _, buffer = cv2.imencode('.jpg', result_frame)
             byte_image = buffer.tobytes()
             yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + byte_image + b'\r\n')
         cap.release()
+        os.remove('sample_result/base64_video.mp4')

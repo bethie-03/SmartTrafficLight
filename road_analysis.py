@@ -196,7 +196,7 @@ class RoadAnalysis:
                 vehicle_speed = car_speed_max
         time = furthest_vehicle_to_light_distance/vehicle_speed
         time=round(time*3600,2)
-        cv2.rectangle(input_image, (self.bboxes[index][0], self.bboxes[index][1]), (self.bboxes[index][2], self.bboxes[index][3]), (0,100,0), 2)
+        cv2.rectangle(input_image, (self.bboxes[index][0], self.bboxes[index][1]), (self.bboxes[index][2], self.bboxes[index][3]), (0,255,0), 2)
         cv2.putText(input_image, f'{self.bboxes[index][4]}-{self.bboxes[index][5]}', (self.bboxes[index][0] ,self.bboxes[index][1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,100,0), 2)
         return time, input_image
         

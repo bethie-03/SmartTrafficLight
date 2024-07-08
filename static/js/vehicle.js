@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var dots = document.querySelector('.dots').children;
     var menu = document.querySelector('.menu');
     var menuIcon = document.getElementById('menu_icon');
     var Home_selection = document.getElementById('Home');
@@ -33,49 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/RA-template';
     })
 
-    for (let i = 0; i < dots.length; i++) {
-        setTimeout(function() {
-            toggleDot(dots[i]);
-        }, i * 300); 
-    }
 });
-
-function toggleDot(dot) {
-    dot.style.background = 'white';
-    increaseMargin(dot, 0); 
-
-    setTimeout(function() {
-        dot.style.background = 'black';
-
-        setTimeout(function() {
-            toggleDot(dot);
-        }, 1000);
-    }, 300); 
-}
-
-function increaseMargin(dot, count) {
-    if (count < 10) {
-        let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
-        dot.style.marginBottom = `${currentMargin + 1}px`;
-
-        setTimeout(function() {
-            increaseMargin(dot, count + 1);
-        }, 30); 
-    } else {
-        decreaseMargin(dot, 10);
-    }
-}
-
-function decreaseMargin(dot, count) {
-    if (count > 0) {
-        let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
-        dot.style.marginBottom = `${currentMargin - 1}px`;
-
-        setTimeout(function() {
-            decreaseMargin(dot, count - 1);
-        }, 30); 
-    }
-}
 
 var del = document.querySelector('.del');
 var dots = document.querySelector('.dots');
@@ -96,30 +53,115 @@ var alt = document.querySelector('.alt')
 var altInput = document.querySelector('.Inputtext')
 var altOutput = document.querySelector('.Outputtext')
 var vehicleRange = document.querySelector('.vehicleRange');
-var text = document.createElement('p')
-text.id = 'persontext'
+var resultBox = document.querySelector('.result')
+var dotsChildren = document.querySelector('.dots').children;
+var originMargin = parseInt(dotsChildren[0].style.marginBottom, 10) || 0;
+var shouldStop = false;
+var haveSelectedOption = 0
 
+function resetMargin() {
+    for (let i = 0; i < dotsChildren.length; i++) {
+        dotsChildren[i].style.marginBottom = `${originMargin}px`;
+    }
+}
+
+function processingDots() {
+    shouldStop = false;
+    resetMargin();
+
+    for (let i = 0; i < dotsChildren.length; i++) {
+        setTimeout(function() {
+            if (!shouldStop) {
+                toggleDot(dotsChildren[i]);
+            }
+        }, i * 300); 
+    }
+
+    function toggleDot(dot) {
+        if (shouldStop) return;
+
+        dot.style.background = 'white';
+        increaseMargin(dot, 0);
+
+        setTimeout(function() {
+            if (shouldStop) return;
+
+            dot.style.background = 'black';
+
+            setTimeout(function() {
+                if (!shouldStop) {
+                    toggleDot(dot);
+                }
+            }, 1000);
+        }, 300); 
+    }
+
+    function increaseMargin(dot, count) {
+        if (shouldStop) return;
+        
+        if (count < 10) {
+            let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
+            dot.style.marginBottom = `${currentMargin + 1}px`;
+
+            setTimeout(function() {
+                if (!shouldStop) {
+                    increaseMargin(dot, count + 1);
+                }
+            }, 30); 
+        } else {
+            decreaseMargin(dot, 10);
+        }
+    }
+
+    function decreaseMargin(dot, count) {
+        if (shouldStop) return;
+        
+        if (count > 0) {
+            let currentMargin = parseInt(dot.style.marginBottom, 10) || 0;
+            dot.style.marginBottom = `${currentMargin - 1}px`;
+
+            setTimeout(function() {
+                if (!shouldStop) {
+                    decreaseMargin(dot, count - 1);
+                }
+            }, 30); 
+        }
+    }
+}
+
+function stopProcessingDots() {
+    shouldStop = true;
+}
 
 function updatePlaceholder() {
     var fileUpload = document.getElementById("file_upload");
     var selectedOption = document.querySelector('input[name=input_type]:checked');
 
     if (selectedOption) {
+        
+        if (Input.querySelector('video') !== null || Input.querySelector('img') !== null){
+            del.style.display = 'flex';
+        } else{
+            del.style.display = 'none';
+        }
         switch (selectedOption.value) {
             case "image":
                 placeholderText.textContent = "Choose an image";
                 fileUpload.accept = "image/*"; 
                 buttonfileUpload.style.display = 'block';
+                resultBox.style.height = '350px';
                 break;
             case "video":
                 placeholderText.textContent = "Choose a video";
                 fileUpload.accept = "video/*"; 
                 buttonfileUpload.style.display = 'block';
+                resultBox.style.height = '350px';
                 break;
             case "video_realtime":
                 placeholderText.textContent = "Choose a video";
                 fileUpload.accept = "video/*"; 
                 buttonfileUpload.style.display = 'block';
+                resultBox.style.height = '500px';
                 break;
         }
     } else {
@@ -165,13 +207,9 @@ function pauseVideo(){
     var VidElement1 = document.getElementById('InputVideo')
     var VidElement2 = document.getElementById('OutputVideo')
 
-    video.addEventListener("ended", function() {
-        pause = true;
-    });
-
-    // Cập nhật trạng thái của video khi nó đang phát
-    video.addEventListener("play", function() {
-        pause = true;
+    VidElement2.addEventListener("ended", function() {
+        placeholderText2.textContent = "Play";
+        pause = false;
     });
 
     if (!pause){
@@ -204,6 +242,9 @@ function uploadImage() {
         var buttonfileUpload = document.querySelector('.browse')
         var reader = new FileReader();
         file = fileInput.files[0]
+        processing_dots.style.display='flex'
+        dots.style.display='flex'
+        processingDots()
         if (file) {
             reader.onload = function(e) {
                 if (selectedOption.value == 'image'){
@@ -211,18 +252,51 @@ function uploadImage() {
                     Element.id='InputImage'
                     Element.title='Default Image'
                     Element.style.display='block'
-                    buttonProcessImage.style.display='block'
+
+                    Element.addEventListener('load', function(){
+                        const Elementrect = Element.getBoundingClientRect();
+                        alt.style.marginTop = (Elementrect.bottom) + 'px';
+                        buttonProcessImage.style.marginTop = (Elementrect.bottom + 20) + 'px';
+                        processing_dots.style.marginTop=(Elementrect.bottom + 20) + 'px';
+                        alt.style.display='flex';
+                        altInput.style.display='block';
+                        altOutput.style.display = 'none';
+                        buttonProcessImage.style.display='block';
+                        stopProcessingDots()
+                        processing_dots.style.display='none'
+                        dots.style.display='none'
+                    })
+
                 } else if (selectedOption.value == 'video' || selectedOption.value == 'video_realtime'){
                     var Element = document.createElement('video');
                     Element.id='InputVideo'
                     Element.title='Default Video'
                     Element.autoplay=false;
-                    Element.style.display='block'
-                    if (selectedOption.value == 'video'){
-                        buttonProcessVideo.style.display='block'
-                    } else if (selectedOption.value == 'video_realtime') {
-                        buttonProcessVideoRealtime.style.display='block'
-                    }
+                    Element.style.display='block';
+                    Element.muted = true;
+
+                    Element.addEventListener('loadedmetadata', function(){
+                        const Elementrect = Element.getBoundingClientRect();
+                        alt.style.marginTop = (Elementrect.bottom) + 'px';
+                        processing_dots.style.marginTop=(Elementrect.bottom + 20) + 'px';
+                        alt.style.display='flex';
+                        altInput.innerHTML='Default Video';
+                        altInput.style.display='block';
+                        altOutput.style.display = 'none';
+
+                        if (selectedOption.value == 'video'){
+                            buttonProcessVideo.style.marginTop = (Elementrect.bottom + 20) + 'px';
+                            buttonPause.style.marginTop = (Elementrect.bottom + 20) + 'px';
+                            buttonProcessVideo.style.display='block'
+                        } else if (selectedOption.value == 'video_realtime') {
+                            buttonProcessVideoRealtime.style.marginTop = (Elementrect.bottom + 20) + 'px';
+                            buttonProcessVideoRealtime.style.display='block';
+                            buttonPause.style.marginTop = (Elementrect.bottom + 20) + 'px';
+                        }
+                        stopProcessingDots()
+                        processing_dots.style.display='none'
+                        dots.style.display='none'
+                    })
                 }
                 Element.src = e.target.result
                 Input.appendChild(Element);
@@ -250,6 +324,8 @@ function processImage() {
     formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
     processing_dots.style.display='flex'
     dots.style.display='flex'
+    processingDots()
+
     fetch('/process-image', {
         method: 'POST',
         body: formData
@@ -265,9 +341,10 @@ function processImage() {
         Output.appendChild(Element);
         Input.style.width= "50%";
         Output.style.display='flex';
-        alt.style.display = 'flex';
+        altOutput.style.display = 'block';
         processing_dots.style.display='none';
         dots.style.display='none';
+        stopProcessingDots()
     })
     .catch(error => {
         console.error('Error:', error);
@@ -284,6 +361,7 @@ function processVideo() {
     formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
     processing_dots.style.display='flex'
     dots.style.display='flex'
+    processingDots()
 
     fetch('/process-video', {
         method: 'POST',
@@ -309,8 +387,10 @@ function processVideo() {
         alt.style.display='flex'
         altInput.innerHTML='Default Video'
         altOutput.innerHTML='Detected Video'
+        altOutput.style.display = 'block';
         processing_dots.style.display='none';
         dots.style.display='none';
+        stopProcessingDots()
     })
     .catch(error => {
         console.error('Error:', error);
@@ -321,12 +401,10 @@ function processVideo() {
 function processVideoRealtime(){
     var vidElement = document.getElementById('InputVideo');
     var formData = new FormData();
-    var resultBox = document.querySelector('.result')
     formData.append('video', vidElement.src);
     formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
 
     var Element = document.createElement('img');
-    resultBox.style.height = '550px'
     Element.id = 'OutputVideo';
     Element.title = 'Detected Video';
     Input.style.display= "none";
@@ -335,8 +413,7 @@ function processVideoRealtime(){
     alt.style.display='flex'
     altInput.style.display='none'
     altOutput.innerHTML='Detected Video'
-    processing_dots.style.display='flex'
-    dots.style.display='flex'
+    altOutput.style.display='block'
 
     const response = fetch('/process_video_realtime',{
         method : 'POST',
@@ -350,6 +427,41 @@ function processVideoRealtime(){
     Element.src = "/stream_video";
     vidElement.play()
 
-    processing_dots.style.display='none';
-    dots.style.display='none';
+    processing_dots.style.display='flex'
+    dots.style.display='flex'
+    processingDots()
+
+    fetch('/process-video', {
+        method: 'POST',
+        body: formData
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        var Element = document.createElement('video');
+        resultBox.style.height = '350px'
+        Input.style.display= "flex";
+        Output.innerHTML = ''
+        Element.id = 'OutputVideo';
+        Element.title = 'Detected Video';
+        Element.type = 'video/mp4';
+        Element.src = data.result;
+        Input.style.width= "50%";
+        Output.style.width = '50%';
+        Output.appendChild(Element);
+        Output.style.display = 'flex';
+        buttonPause.style.display = 'block';
+        altInput.style.display = 'block';
+        altOutput.style.display = 'block';
+        processing_dots.style.display='none';
+        dots.style.display='none';
+        stopProcessingDots()
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
