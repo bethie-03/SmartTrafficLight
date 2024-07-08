@@ -164,6 +164,16 @@ function pauseVideo(){
     var placeholderText2 = document.querySelector(".placeholderText2");
     var VidElement1 = document.getElementById('InputVideo')
     var VidElement2 = document.getElementById('OutputVideo')
+
+    video.addEventListener("ended", function() {
+        pause = true;
+    });
+
+    // Cập nhật trạng thái của video khi nó đang phát
+    video.addEventListener("play", function() {
+        pause = true;
+    });
+
     if (!pause){
         VidElement1.play()
         VidElement2.play()
@@ -308,44 +318,38 @@ function processVideo() {
     buttonProcessVideo.style.display='none'
 }
 
-async function processVideoRealtime(){
+function processVideoRealtime(){
     var vidElement = document.getElementById('InputVideo');
     var formData = new FormData();
+    var resultBox = document.querySelector('.result')
     formData.append('video', vidElement.src);
     formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
 
     var Element = document.createElement('img');
+    resultBox.style.height = '550px'
     Element.id = 'OutputVideo';
     Element.title = 'Detected Video';
-    Input.style.width= "50%";
+    Input.style.display= "none";
+    Output.style.width = '100%';
     buttonProcessVideoRealtime.style.display = 'none';
     alt.style.display='flex'
-    altInput.innerHTML='Default Video'
+    altInput.style.display='none'
     altOutput.innerHTML='Detected Video'
     processing_dots.style.display='flex'
     dots.style.display='flex'
 
-    const response = await fetch('/process_video_realtime',{
+    const response = fetch('/process_video_realtime',{
         method : 'POST',
         body : formData
     })
-    vidElement.play()
+    
     Output.appendChild(Element);
     Output.style.display = 'flex';
-    
-    const reader = response.body.getReader()
-    const decoder = new TextDecoder('utf-8')
 
-    while (true){
-        const {value, done} = await reader.read();
-        if (done) {
-            console.log(value)
-            processing_dots.style.display='none';
-            dots.style.display='none';
-            break;
-        }
-        const url = decoder.decode(value)
-        console.log(url)
-        Element.src = url
-    }
+    console.log(response.data)
+    Element.src = "/stream_video";
+    vidElement.play()
+
+    processing_dots.style.display='none';
+    dots.style.display='none';
 }

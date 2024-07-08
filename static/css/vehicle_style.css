@@ -225,7 +225,7 @@ input[class='chooseOtherfiles']{
 
 .del{
     margin: auto;
-    height: 100vh;
+    height: calc(100vh - 20px);
     width: 100%;
     position: absolute;
     background: linear-gradient(to top, rgba(154, 146, 146, 0.8)50%, rgba(154, 146, 146, 0.8)50%);

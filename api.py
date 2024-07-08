@@ -4,6 +4,7 @@ from road_analysis import *
 
 app = Flask(__name__,static_folder="./static", template_folder="./templates")
 RA = RoadAnalysis()
+VD = Vehicle_Detection()
 
 @app.route('/', methods=["GET"])
 def home():
@@ -22,8 +23,7 @@ def process_image():
     if 'image' in request.form:
         file = request.form['image']
         vehicle_cfd = request.form['vehicle_cfd']
-        VD = Vehicle_Detection(float(vehicle_cfd))
-        result = VD.base64_image_inference(file)
+        result = VD.base64_image_inference(file, float(vehicle_cfd))
         return {"result": result}
     
 @app.route('/process-video', methods=['POST'])
@@ -31,19 +31,22 @@ def process_video():
     if 'video' in request.form:
         file = request.form['video']
         vehicle_cfd = request.form['vehicle_cfd']
-        VD = Vehicle_Detection(float(vehicle_cfd))
-        file_path = VD.base64_video_inference(file, 'sample_result/result.mp4')
+        file_path = VD.base64_video_inference(file, 'sample_result/result.mp4', float(vehicle_cfd))
         result = VD.video_to_base64(file_path)
         return {"result": result}
-
+    
 @app.route('/process_video_realtime', methods=['POST'])
-def process_video_realtime():
+def upload_video():
     if 'video' in request.form:
         file = request.form['video']
+        global vehicle_cfd
         vehicle_cfd = request.form['vehicle_cfd']
-        host_url = request.host_url
-        VD = Vehicle_Detection(float(vehicle_cfd))
-        return Response(VD.base64_video_realtime_inference(file, host_url), mimetype='text/event-stream')
+        VD.base64_video_to_path(file)
+    return "Video uploaded successfully", 200
+
+@app.route('/stream_video', methods=['GET'])
+def process_video_realtime():
+    return Response(VD.base64_video_realtime_inference(float(vehicle_cfd)), mimetype='multipart/x-mixed-replace; boundary=frame')
     
 def convert_to_int(points):
     int_points = []

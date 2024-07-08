@@ -1,4 +1,3 @@
-from ultralytics import YOLO
 from configs import *
 import cv2
 import numpy as np
@@ -6,18 +5,17 @@ import tempfile
 import base64
 
 class Vehicle_Detection:
-    def __init__(self, vehicle_conf):
-        self.model = YOLO(MODEL_PATH)
-        self.vehicle_conf = vehicle_conf
+    def __init__(self):
+        self.model = MODEL
         self.__fourcc = cv2.VideoWriter_fourcc(*'H264')
         
-    def image_inference(self, image):
+    def image_inference(self, image, vehicle_conf):
         results = self.model(image)[0]
         
         if len(results.boxes.data) > 0:
             for result in results.boxes.data:
                 confidence = result[4]
-                if confidence > self.vehicle_conf:
+                if confidence > vehicle_conf:
                     x1, y1, x2, y2 = list(map(int, result[:4])) 
                     confidence = result[4]
                     class_id = int(result[5])
@@ -27,19 +25,19 @@ class Vehicle_Detection:
                     continue
         return image
         
-    def base64_image_inference(self, base64_image_data):
+    def base64_image_inference(self, base64_image_data, vehicle_conf):
         encoded_data = str(base64_image_data).split(',')[1]
         nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         
-        result_image = self.image_inference(image)
+        result_image = self.image_inference(image, vehicle_conf)
         
         _, buffer = cv2.imencode('.jpg', result_image)
         jpg_as_text = base64.b64encode(buffer)
 
         return f"data:image/jpeg;base64,{jpg_as_text.decode('utf-8')}"
     
-    def base64_video_inference(self, base64_video_data, output_video_path):
+    def base64_video_inference(self, base64_video_data, output_video_path, vehicle_conf):
         encoded_data = str(base64_video_data).split(',')[1]
         decoded = base64.b64decode(encoded_data)
         
@@ -58,7 +56,7 @@ class Vehicle_Detection:
                 break
             
 
-            result_frame = self.image_inference(frame)
+            result_frame = self.image_inference(frame, vehicle_conf)
             out.write(result_frame)
 
         cap.release()
@@ -72,22 +70,26 @@ class Vehicle_Detection:
         
         return f"data:video/mp4;base64,{base64_encoded.decode('utf-8')}"
     
-    def base64_video_realtime_inference(self, base64_video_data, host_url):
-        encoded_data = str(base64_video_data).split(',')[1]
-        decoded = base64.b64decode(encoded_data)
-        
-        with tempfile.NamedTemporaryFile() as temp:
-            temp.write(decoded)
-            cap = cv2.VideoCapture(temp.name)
-                    
+    def base64_video_to_path(self, base64_video_data):
+        encoded_data = base64_video_data.split(',')[1]
+        decoded_data = base64.b64decode(encoded_data)
+
+        with open('sample_result/base64_video.mp4', 'wb') as video_file:
+            video_file.write(decoded_data)
+    
+    def base64_video_realtime_inference(self, vehicle_conf):
+        cap = cv2.VideoCapture('sample_result/base64_video.mp4')
         id = 0
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
-            result_frame = self.image_inference(frame)
+
+            result_frame = self.image_inference(frame, vehicle_conf)
             cv2.imwrite(f'./static/images/frame_{id}.jpg', result_frame)
-            image_url = host_url + f'static/images/frame_{id}.jpg'
-            yield f'{image_url}'
-            id += 1
+
+            _, buffer = cv2.imencode('.jpg', result_frame)
+            byte_image = buffer.tobytes()
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + byte_image + b'\r\n')
         cap.release()
