@@ -9,11 +9,13 @@ import joblib
 import numpy as np
 import cv2
 from configs import POLY_REG_MODEL_PATH
-
+import os
 import warnings
 warnings.filterwarnings("ignore")
 #Predict green time
 model = joblib.load(POLY_REG_MODEL_PATH)
+
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 #TEST SMART TRAFFIC LIGHT SYSTEM
 # RIGHT-LEFT / DOWN / LEFT-RIGHT / UP
@@ -792,6 +794,7 @@ class Main:
             # Capture the frame
             frame = pygame.surfarray.array3d(self.screen)
             frame = np.rot90(frame)
+            frame = np.flipud(frame)  
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
             ret, jpeg = cv2.imencode('.jpg', frame)

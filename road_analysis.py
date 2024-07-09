@@ -17,7 +17,7 @@ class RoadAnalysis:
         self.is_vertical = None
         self.polynomial_reg_model = POLYNOMIAL_REG_MODEL
         
-    def base64_image_inference(self, base64_image_data):
+    def base64_image_decode(self, base64_image_data):
         encoded_data = str(base64_image_data).split(',')[1]
         nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -230,7 +230,7 @@ class RoadAnalysis:
                     car_speed_average, 
                     car_speed_max):
         
-        input_image = self.base64_image_inference(base64_image_data)
+        input_image = self.base64_image_decode(base64_image_data)
         image_for_calculate_ratio = input_image.copy()
 
         height, width, _ = input_image.shape
