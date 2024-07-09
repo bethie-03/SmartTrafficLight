@@ -9,7 +9,6 @@ class Vehicle_Detection:
     def __init__(self):
         self.model = MODEL
         self.__fourcc = cv2.VideoWriter_fourcc(*'H264')
-        self.vehicle_conf = None
         
     def image_inference(self, image, vehicle_conf):
         results = self.model(image)[0]
@@ -80,7 +79,7 @@ class Vehicle_Detection:
         with open('sample_result/base64_video.mp4', 'wb') as video_file:
             video_file.write(decoded_data)
     
-    def base64_video_realtime_inference(self):
+    def base64_video_realtime_inference(self, vehicle_conf):
         file_path = 'sample_result/base64_video.mp4'
         cap = cv2.VideoCapture(file_path)
         while cap.isOpened():
@@ -88,7 +87,7 @@ class Vehicle_Detection:
             if not ret:
                 break
 
-            result_frame = self.image_inference(frame, self.vehicle_conf)
+            result_frame = self.image_inference(frame, vehicle_conf)
             _, buffer = cv2.imencode('.jpg', result_frame)
             byte_image = buffer.tobytes()
             yield (b'--frame\r\n'
