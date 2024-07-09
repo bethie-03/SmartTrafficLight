@@ -62,6 +62,7 @@ var dotsChildren = document.querySelector('.dots').children;
 var originMargin = parseInt(dotsChildren[0].style.marginBottom, 10) || 0;
 var shouldStop = false;
 var haveSelectedOption = 0
+var previousSelectedValue = null
 
 function resetMargin() {
     for (let i = 0; i < dotsChildren.length; i++) {
@@ -140,14 +141,24 @@ function stopProcessingDots() {
 function updatePlaceholder() {
     var fileUpload = document.getElementById("file_upload");
     var selectedOption = document.querySelector('input[name=input_type]:checked');
+    let radios = document.querySelectorAll('input[type="radio"]');
 
     if (selectedOption) {
-        
+        console.log(previousSelectedValue)
         if (Input.querySelector('video') !== null || Input.querySelector('img') !== null){
-            del.style.display = 'flex';
+        del.style.display = 'flex';
+        radios.forEach(radio => {
+            if (radio.value === previousSelectedValue) {
+                radio.checked = true;
+                previousSelectedValue = radio.value
+            }
+        });
+
         } else{
             del.style.display = 'none';
+            previousSelectedValue = selectedOption.value
         }
+
         switch (selectedOption.value) {
             case "image":
                 placeholderText.textContent = "Choose an image";
@@ -437,13 +448,6 @@ function processVideoRealtime(){
     .catch(error => {
         console.error('Error:', error);
     });
-
-    /*const response = fetch('/process_video_realtime',{
-        method : 'POST',
-        body : formData
-    })*/
-    
-    //vidElement.play()
 
     processing_dots.style.display='flex'
     dots.style.display='flex'
