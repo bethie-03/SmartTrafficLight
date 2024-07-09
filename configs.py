@@ -10,6 +10,6 @@ def load_regression_model(model_path):
     return polynomial_reg_model
 
 POLYNOMIAL_REG_MODEL = load_regression_model(POLY_REG_MODEL_PATH)
-MODEL = torch.hub.load('ultralytics/yolov5', 'custom', MODEL_PATH, device="cuda:0") 
+MODEL = torch.hub.load('ultralytics/yolov5', 'custom', MODEL_PATH, device="cpu", force_reload=True) 
 
         

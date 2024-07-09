@@ -21,6 +21,7 @@ class RoadAnalysis:
         encoded_data = str(base64_image_data).split(',')[1]
         nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        cv2.imwrite('sample_result/org_image.jpg', image)
         return image
     
     def actual_point(self, ratio_points, height, width):
@@ -40,6 +41,7 @@ class RoadAnalysis:
         self.mask = np.zeros((height, width), dtype=np.uint8)
         cv2.fillPoly(self.mask, [self.points_array_list], color=255)
         self.mask_image = cv2.bitwise_and(image, image, mask=self.mask)
+        cv2.imwrite('sample_result/mask_image.jpg', self.mask_image)
     
     def calculate_total_zone_pixels(self) -> int:
         total_zone_area = cv2.contourArea(self.points_array_list)
@@ -60,6 +62,7 @@ class RoadAnalysis:
     def calculate_total_bounding_box_area(self, image):
         total_bounding_box_area = 0
         image = cv2.bitwise_and(image,image, mask=self.mask)
+        cv2.imwrite('sample_result/abcd.jpg', image)
         height, width, _ = image.shape
         for y in range(height):
             for x in range(width):
@@ -205,10 +208,10 @@ class RoadAnalysis:
         for box in self.bboxes:
             if box[4] == 0:
                 input_value[3] += 1
-            elif box[4] == 3:
-                input_value[1] += 1
-            elif box[4] == 4:
+            elif box[4] == 1:
                 input_value[2] += 1
+            elif box[4] == 2:
+                input_value[1] += 1
             else:
                 input_value[4] += 1
         return input_value
@@ -255,21 +258,30 @@ class RoadAnalysis:
                                height = height, 
                                width = width)
         
-        results = self.model(self.mask_image)[0]
-        
-        if len(results.boxes.data) > 0:
-            for result in results.boxes.data:
-                x1, y1, x2, y2 = list(map(int, result[:4])) 
-                class_id = int(result[5])
-                score = round(float(result[4]),2)
-                self.bboxes.append([x1,y1,x2,y2, class_id, score])
+        results = self.model(self.mask_image)
+        dataframe = results.pandas().xyxy[0]
+
+        if len(dataframe) > 0:
+            for index in range(len(dataframe)):
+                row = dataframe.iloc[index]
+                x1 = int(row.iloc[0])
+                y1 = int(row.iloc[1])
+                x2 = int(row.iloc[2])
+                y2 = int(row.iloc[3])
+                confidence = round(row.iloc[4],2)
+                class_id = int(row.iloc[5])
+                name = row.iloc[6]
+                self.bboxes.append([x1,y1,x2,y2, class_id, confidence])
                 
                 cv2.rectangle(image_for_calculate_ratio, (x1,y1), (x2,y2), (255,0,0), -1)
                 
                 cv2.rectangle(input_image, (x1,y1), (x2,y2), (0,0,255),2)
-                cv2.putText(input_image, f'{class_id}-{score}', (x1 ,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 5)
-                cv2.putText(input_image, f'{class_id}-{score}', (x1 ,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 2)
-                
+                cv2.putText(input_image, f'{class_id}-{confidence}', (x1 ,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 5)
+                cv2.putText(input_image, f'{class_id}-{confidence}', (x1 ,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 2)
+            
+            cv2.imwrite('sample_result/image_for_calculate_ratio.jpg', image_for_calculate_ratio)
+            cv2.imwrite('sample_result/input_image.jpg', input_image)
+
             ratio = self.calculate_ratio(image_for_calculate_ratio)
             input_value, green_light_time = self.predict_green_light_time(ratio)
             if ratio <= 0.8:
