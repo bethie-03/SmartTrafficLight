@@ -46,6 +46,7 @@ def upload_video():
         file = request.form['video']
         global vehicle_cfdd
         vehicle_cfdd = request.form['vehicle_cfd']
+        print(vehicle_cfdd)
         VD.base64_video_to_path(file)
     return "Video uploaded successfully", 200
 
