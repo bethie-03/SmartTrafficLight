@@ -604,7 +604,7 @@ def generateVehicles():
     dist_vehicle_truck = 60
     dist_vehicle_motorbike = 793
     dist_vehicle_container = 0
-    dist_vehicle_firetruck = 3
+    dist_vehicle_firetruck = 0
     dist_vehicle_van = 0
     dist_vehicle_bicycle = 0
 

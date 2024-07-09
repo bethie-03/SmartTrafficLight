@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var VD_selection = document.getElementById('VD');
     var RA_selection = document.getElementById('RA');
     var click = true
+    var pygame = document.getElementById('pygame-stream')
+    pygame.src = '/stream_pygame'
 
     menuIcon.addEventListener('click', function(event) {
         if (click){
@@ -25,14 +27,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     VD_selection.addEventListener('click', function() {
+        pygame.src = ''
         window.location.href = '/VD-template';
     })
 
     RA_selection.addEventListener('click', function() {
+        pygame.src = ''
         window.location.href = '/RA-template';
     })
 
     Home_selection.addEventListener('click', function() {
+        pygame.src = ''
         window.location.href = '/';
     })
 });
+

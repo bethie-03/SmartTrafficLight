@@ -44,14 +44,14 @@ def process_video():
 def upload_video():
     if 'video' in request.form:
         file = request.form['video']
-        global vehicle_cfd
-        vehicle_cfd = request.form['vehicle_cfd']
+        global vehicle_cfdd
+        vehicle_cfdd = request.form['vehicle_cfd']
         VD.base64_video_to_path(file)
     return "Video uploaded successfully", 200
 
 @app.route('/stream_video', methods=['GET'])
 def process_video_realtime():
-    return Response(VD.base64_video_realtime_inference(float(vehicle_cfd)), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(VD.base64_video_realtime_inference(float(vehicle_cfdd)), mimetype='multipart/x-mixed-replace; boundary=frame')
     
 def convert_to_int(points):
     int_points = []
