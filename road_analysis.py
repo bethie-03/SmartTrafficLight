@@ -21,7 +21,6 @@ class RoadAnalysis:
         encoded_data = str(base64_image_data).split(',')[1]
         nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        cv2.imwrite('sample_result/org_image.jpg', image)
         return image
     
     def actual_point(self, ratio_points, height, width):
@@ -41,7 +40,6 @@ class RoadAnalysis:
         self.mask = np.zeros((height, width), dtype=np.uint8)
         cv2.fillPoly(self.mask, [self.points_array_list], color=255)
         self.mask_image = cv2.bitwise_and(image, image, mask=self.mask)
-        cv2.imwrite('sample_result/mask_image.jpg', self.mask_image)
     
     def calculate_total_zone_pixels(self) -> int:
         total_zone_area = cv2.contourArea(self.points_array_list)
@@ -62,7 +60,6 @@ class RoadAnalysis:
     def calculate_total_bounding_box_area(self, image):
         total_bounding_box_area = 0
         image = cv2.bitwise_and(image,image, mask=self.mask)
-        cv2.imwrite('sample_result/abcd.jpg', image)
         height, width, _ = image.shape
         for y in range(height):
             for x in range(width):
@@ -278,9 +275,6 @@ class RoadAnalysis:
                 cv2.rectangle(input_image, (x1,y1), (x2,y2), (0,0,255),2)
                 cv2.putText(input_image, f'{class_id}-{confidence}', (x1 ,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 5)
                 cv2.putText(input_image, f'{class_id}-{confidence}', (x1 ,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 2)
-            
-            cv2.imwrite('sample_result/image_for_calculate_ratio.jpg', image_for_calculate_ratio)
-            cv2.imwrite('sample_result/input_image.jpg', input_image)
 
             ratio = self.calculate_ratio(image_for_calculate_ratio)
             input_value, green_light_time = self.predict_green_light_time(ratio)
