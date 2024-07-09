@@ -408,6 +408,8 @@ function processVideoRealtime(){
     formData.append('video', vidElement.src);
     formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
 
+    console.log(parseInt(placeholderTextVehicle.textContent))
+
     var Element = document.createElement('img');
     Element.id = 'OutputVideo';
     Element.title = 'Detected Video';
