@@ -81,7 +81,8 @@ class Vehicle_Detection:
             video_file.write(decoded_data)
     
     def base64_video_realtime_inference(self):
-        cap = cv2.VideoCapture('sample_result/base64_video.mp4')
+        file_path = 'sample_result/base64_video.mp4'
+        cap = cv2.VideoCapture(file_path)
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
@@ -92,5 +93,7 @@ class Vehicle_Detection:
             byte_image = buffer.tobytes()
             yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + byte_image + b'\r\n')
+            
         cap.release()
-        os.remove('sample_result/base64_video.mp4')
+        if os.path.exists(file_path):
+            os.remove(file_path)
