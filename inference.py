@@ -11,20 +11,20 @@ class Vehicle_Detection:
         self.__fourcc = cv2.VideoWriter_fourcc(*'H264')
         
     def image_inference(self, image, vehicle_conf):
-        results = self.model(image)[0]
-        
-        if len(results.boxes.data) > 0:
-            for result in results.boxes.data:
-                confidence = result[4]
-                if confidence > vehicle_conf:
-                    x1, y1, x2, y2 = list(map(int, result[:4])) 
-                    confidence = round(float(result[4]), 2)
-                    class_id = int(result[5])
-                    cv2.rectangle(image, (x1,y1), (x2,y2), (0,0,255), 2)
-                    cv2.putText(image, f'{self.model.names[class_id]}-{confidence}', (x1,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 5)
-                    cv2.putText(image, f'{self.model.names[class_id]}-{confidence}', (x1,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                else:
-                    continue
+        self.model.conf = vehicle_conf
+        results = self.model(image)
+        dataframe = results.pandas().xyxy[0]
+        for index in range(len(dataframe)):
+            row = dataframe.iloc[index]
+            x1 = int(row.iloc[0])
+            y1 = int(row.iloc[1])
+            x2 = int(row.iloc[2])
+            y2 = int(row.iloc[3])
+            confidence = round(row.iloc[4],2)
+            name = row.iloc[6]
+            cv2.rectangle(image, (x1,y1), (x2,y2), (0,0,255), 2)
+            cv2.putText(image, f'{name}-{confidence}', (x1,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 5)
+            cv2.putText(image, f'{name}-{confidence}', (x1,y1-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         return image
         
     def base64_image_inference(self, base64_image_data, vehicle_conf):

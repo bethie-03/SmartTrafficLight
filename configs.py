@@ -1,7 +1,7 @@
 import pickle
-from ultralytics import YOLO
+import torch
 
-MODEL_PATH = 'source/best.pt'
+MODEL_PATH = 'source/yolov5.pt'
 POLY_REG_MODEL_PATH = 'source/polynomial_regression_model.pkl'
 
 def load_regression_model(model_path):
@@ -10,5 +10,6 @@ def load_regression_model(model_path):
     return polynomial_reg_model
 
 POLYNOMIAL_REG_MODEL = load_regression_model(POLY_REG_MODEL_PATH)
-MODEL = YOLO(MODEL_PATH)
+MODEL = torch.hub.load('ultralytics/yolov5', 'custom', MODEL_PATH, device="cuda:0") 
+
         
