@@ -47,7 +47,7 @@ def upload_video():
         global vehicle_cfd
         vehicle_cfd = request.form['vehicle_cfd']
         VD.base64_video_to_path(file)
-    return "Video uploaded successfully", 200
+    return {"response": "ok"}
 
 @app.route('/stream_video', methods=['GET'])
 def process_video_realtime():

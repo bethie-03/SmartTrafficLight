@@ -71,8 +71,7 @@ class Vehicle_Detection:
         
         return f"data:video/mp4;base64,{base64_encoded.decode('utf-8')}"
     
-    def base64_video_to_path(self, base64_video_data, vehicle_conf):
-        self.vehicle_conf = vehicle_conf
+    def base64_video_to_path(self, base64_video_data):
         encoded_data = base64_video_data.split(',')[1]
         decoded_data = base64.b64decode(encoded_data)
 

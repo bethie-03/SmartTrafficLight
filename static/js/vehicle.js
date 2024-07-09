@@ -407,7 +407,7 @@ function processVideoRealtime(){
     var formData = new FormData();
     formData.append('video', vidElement.src);
     formData.append('vehicle_cfd', parseInt(placeholderTextVehicle.textContent) / 100);
-    
+
     var Element = document.createElement('img');
     Element.id = 'OutputVideo';
     Element.title = 'Detected Video';
@@ -419,17 +419,31 @@ function processVideoRealtime(){
     altOutput.innerHTML='Detected Video'
     altOutput.style.display='block'
 
-    const response = fetch('/process_video_realtime',{
+    fetch('/process_video_realtime', {
+        method: 'POST',
+        body: formData
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        Output.appendChild(Element);
+        Output.style.display = 'flex';
+        Element.src = "/stream_video";
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+    /*const response = fetch('/process_video_realtime',{
         method : 'POST',
         body : formData
-    })
+    })*/
     
-    Output.appendChild(Element);
-    Output.style.display = 'flex';
-
-    console.log(response.data)
-    Element.src = "/stream_video";
-    vidElement.play()
+    //vidElement.play()
 
     processing_dots.style.display='flex'
     dots.style.display='flex'
