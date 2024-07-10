@@ -8,7 +8,7 @@ import os
 class Vehicle_Detection:
     def __init__(self):
         self.model = MODEL
-        self.__fourcc = cv2.VideoWriter_fourcc(*'avc1')
+        self.__fourcc = cv2.VideoWriter_fourcc(*'H264')
         
     def image_inference(self, image, vehicle_conf):
         self.model.conf = vehicle_conf

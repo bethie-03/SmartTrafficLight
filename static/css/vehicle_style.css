@@ -46,6 +46,7 @@ ul{
     height: auto;
     width: auto;
     padding-left: 0px;
+    z-index: 1000;
 }
 
 ul li{
@@ -76,6 +77,7 @@ img[id='menu_icon']{
     position: absolute;
     margin-top: 10px;
     margin-left: calc(100vw - 50px);
+    z-index: 1000;
 }
 
 img[id='menu_icon']:hover{
