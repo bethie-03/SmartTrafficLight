@@ -12,9 +12,9 @@ from configs import POLY_REG_MODEL_PATH
 import os
 import warnings
 warnings.filterwarnings("ignore")
-#Predict green time
-model = joblib.load(POLY_REG_MODEL_PATH)
 
+model = joblib.load(POLY_REG_MODEL_PATH)
+random.seed(42)
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 #TEST SMART TRAFFIC LIGHT SYSTEM
@@ -38,12 +38,11 @@ defaultYellow = 5
 
 signals = []
 noOfSignals = 2
-currentGreen = 0   # Indicates which signal is green currently
-nextGreen = (currentGreen+1)%noOfSignals    # Indicates which signal will turn green next
-currentYellow = 0   # Indicates whether yellow signal is on or off 
+currentGreen = 0  
+nextGreen = (currentGreen+1)%noOfSignals    
+currentYellow = 0   # on / off
 
 
-# Coordinates of vehicles' start
 x = {'right':[0,0], 'down':[655,616], 'left':[1400,1400], 'up':[702,740]}    
 y = {'right':[468,510], 'down':[10,10], 'left':[422,385], 'up':[920,920]}
 
@@ -71,26 +70,20 @@ vehicleSizes = {0:[62,25], 1:[88,30], 2:[81,33], 3:[28,8],4:[176,37],5:[115,35],
 vehicles_length = {'car': 62, 'bus':88, 'truck':81, 'bike':28, 'firetruck':115}
 vehicleTypes = {0:'car', 1:'bus', 2:'truck', 3:'bike',4:'container',5:'firetruck',6:'van',7:'bicycle'}
 vehileArea = {'car': 1550, 'bus': 2640,'truck': 2673,'bike':112,'firetruck':4025}
-# speeds = {'car':2.25, 'bus':1.8, 'truck':1.8, 'bike':2.5, 'container':1.7 , 'firetruck':2.4, 'van':2.2, 'bicycle':1}  # average speeds of vehicles
-speeds = {'car':4, 'bus':4, 'truck':4, 'bike':4, 'container':4, 'firetruck':4, 'van':4, 'bicycle':1}  # average speeds of vehicles
-
+speeds = {'car':4, 'bus':4, 'truck':4, 'bike':4, 'container':4, 'firetruck':4, 'van':4, 'bicycle':1}  
 directionNumbers = {0:'right', 1:'down', 2:'left', 3:'up'}
 
-# Coordinates of signal image, timer, and vehicle count
 signalCoods = [(455,562),(560,152),(920,270),(786,673)]
 signalTimerCoods = [(435,562),(540,152),(900,270),(816,673)]
 
-# Coordinates of stop lines
-stopLines = {'right': 490, 'down': 245, 'left': 900, 'up': 670}
+stopLines = {'right': 500, 'down': 255, 'left': 895, 'up': 660}
 defaultStop = {'right': 475, 'down': 235, 'left': 925, 'up': 690}
 
-# stops = {'right': [580,580,580], 'down': [320,320,320], 'left': [810,810,810], 'up': [545,545,545]}
 
-# Gap between vehicles
-stoppingGap = 3    # stopping gap
-movingGap = 6   # moving gap
+stoppingGap = 3   
+movingGap = 6  
 
-detect_length = 500 # pixels
+detect_length = 200 # pixels
 detect_width = 77 # pixels
 
 # Vehicle throughtput
@@ -107,7 +100,7 @@ class TrafficSignal:
         self.yellow = yellow
         self.green = green
         self.signalText = ""
-#######################
+
 class Vehicle(pygame.sprite.Sprite):
     def __init__(self, lane, vehicleClass, direction_number, direction, angle, vehiclesize):
         pygame.sprite.Sprite.__init__(self)
@@ -353,7 +346,6 @@ class Vehicle(pygame.sprite.Sprite):
                         vehicles[self.direction][self.lane_2][self.index_2 - 1].image.get_rect().height + movingGap))):
                     self.y -= self.speed
 
-
         else:
             if self.direction == 'right':
                 if self.crossed == 0 and self.x + self.image.get_rect().width > stopLines[self.direction]:
@@ -426,17 +418,13 @@ class Vehicle(pygame.sprite.Sprite):
                     self.y -= self.speed
 
 
-# Initialization of signals with default values
 def initialize():
     
     ts1 = TrafficSignal(0, defaultYellow, defaultGreen[0])
     signals.append(ts1)
     ts2 = TrafficSignal(ts1.red+ts1.yellow+ts1.green, defaultYellow, defaultGreen[1])
     signals.append(ts2)
-    # ts3 = TrafficSignal(defaultRed, defaultYellow, defaultGreen[2])
-    # signals.append(ts3)
-    # ts4 = TrafficSignal(defaultRed, defaultYellow, defaultGreen[3])
-    # signals.append(ts4)
+
 
     repeat()
 def get_vehicle_inZone():    
@@ -446,7 +434,6 @@ def get_vehicle_inZone():
     'left': {0: [], 1: [], 2: [], 3: []}, 
     'up': {0: [], 1: [], 2: [], 3: []}
         }
-    # Iterate through each direction and lane
     for direction, lanes in vehicles_notpassed.items():
         for lane, vehicles in lanes.items():
             current_length = 0
@@ -457,97 +444,79 @@ def get_vehicle_inZone():
                         vehicles_InDetectZone[direction][lane].append(vehicle)
                         current_length += vehicle_length
                     else:
-                        break  # Exit loop if adding this vehicle exceeds lane length limit
+                        break  
     
     return vehicles_InDetectZone
 def count_and_add_to_zone(vehicles_InDetectZone):
-    vehicle_values = {'bike': 1, 'car': 0.5, 'bus': 0.5, 'truck': 0.5, 'firetruck':0.5}  # Define vehicle values as per the rule
-    number_vehices_right_inZone = {'car':0, 'bus':0, 'truck':0, 'bike':0, 'firetruck':0}
-    number_vehices_down_inZone = {'car':0, 'bus':0, 'truck':0, 'bike':0, 'firetruck':0}
-    number_vehices_left_inZone = {'car':0, 'bus':0, 'truck':0, 'bike':0, 'firetruck':0}
-    number_vehices_up_inZone = {'car':0, 'bus':0, 'truck':0, 'bike':0, 'firetruck':0}
+    vehicle_values = {'bike': 1, 'car': 0.5, 'bus': 0.5, 'truck': 0.5, 'firetruck':0.5}
     number_vehices_inZone = {
-        'right': number_vehices_right_inZone,
-        'down': number_vehices_down_inZone,
-        'left': number_vehices_left_inZone,
-        'up': number_vehices_up_inZone
+        'right': {'car': 0, 'bus': 0, 'truck': 0, 'bike': 0, 'firetruck': 0},
+        'down': {'car': 0, 'bus': 0, 'truck': 0, 'bike': 0, 'firetruck': 0},
+        'left': {'car': 0, 'bus': 0, 'truck': 0, 'bike': 0, 'firetruck': 0},
+        'up': {'car': 0, 'bus': 0, 'truck': 0, 'bike': 0, 'firetruck': 0}
     }
+    
     for direction, lanes in vehicles_InDetectZone.items():
-        for lane, vehicles in lanes.items():
+        for vehicles in lanes.values():
             for vehicle in vehicles:
                 if vehicle in vehicle_values:
                     number_vehices_inZone[direction][vehicle] += vehicle_values[vehicle]
+    
     return number_vehices_inZone
 
 def calculate_ratios(number_vehices_inZone):
     ratios = {}
     
     for direction, counts in number_vehices_inZone.items():
-        total_area = 0
-        
-        for vehicle, count in counts.items():
-            if vehicle in vehileArea:
-                total_area += count * vehileArea[vehicle]
-        
+        total_area = sum(counts.get(vehicle, 0) * vehileArea.get(vehicle, 0) for vehicle in counts)
         area_direction = detect_width * detect_length
-        ratio = total_area / area_direction
-        
-        ratios[direction] = ratio
+        ratios[direction] = total_area / area_direction
     
     return ratios
 def prepare_input_data(ratios, number_vehices_inZone, direction):
-    # Extract the ratio for the given direction
     ratio_value = ratios[direction]
+    vehicle_types = ['bike', 'car', 'bus', 'truck']
     
-    # Extract the count of each vehicle type for the given direction
-    num_bikes = number_vehices_inZone[direction]['bike']
-    num_cars = number_vehices_inZone[direction]['car']
-    num_buses = number_vehices_inZone[direction]['bus']
-    num_trucks = number_vehices_inZone[direction]['truck']
+    vehicle_counts = [number_vehices_inZone[direction].get(vtype, 0) for vtype in vehicle_types]
     
-    # Prepare the input data
-    input_data = np.array([[ratio_value, num_bikes, num_cars, num_buses, num_trucks]])
+    input_data = np.array([[ratio_value] + vehicle_counts])
+
     return input_data
 def predict_traffic_light_time(input_data):
     predicted_time = model.predict(input_data)
     return predicted_time[0]
 
 def check_for_firetruck(vehicles_InDetectZone):
-    print(vehicles_InDetectZone)
     for direction, vehicles in vehicles_InDetectZone.items():
         if vehicles.get('firetruck', 0) > 0:
             return 1, direction
     return 0, None
 def repeat():
     global currentGreen, currentYellow, nextGreen, vehicle_middle
+
     while signals[currentGreen].green > 0:   
         updateValues()
         time.sleep(1)
-    
+
     currentYellow = 1  
-    
-    for i in range(0, 1):
-        for vehicle in vehicles[directionNumbers[currentGreen]][i]:
-            vehicle.stop = defaultStop[directionNumbers[currentGreen]]
-    
-    while signals[currentGreen].yellow > 0: 
+
+    for vehicle in vehicles[directionNumbers[currentGreen]][0]:
+        vehicle.stop = defaultStop[directionNumbers[currentGreen]]
+
+    while signals[currentGreen].yellow > 0:
         updateValues()
         time.sleep(1)
-    
+
     while vehicle_middle >= 5:
         time.sleep(1)
-    
+
     currentYellow = 0   
-    
-    if currentGreen == 0:
-        directions = ['down', 'up']
-    else:
-        directions = ['right', 'left']
-    
+
+    directions = ['down', 'up'] if currentGreen == 0 else ['right', 'left']
+
     detect_vehicle = count_and_add_to_zone(get_vehicle_inZone())
     ratios = calculate_ratios(detect_vehicle)
-    
-    # Check if current green time is less than 3 seconds
+
     if signals[currentGreen].green < 3:
         predicted_times = []
         
@@ -557,45 +526,40 @@ def repeat():
             predicted_times.append(traffic_light_time)
         
         predict_green_time = round(max(predicted_times))
-        
-        # Set next green time and update signals
+        print(f'Direct: {direct} - Green Time: {predict_green_time}')
+        print("---------------------------------------------------")
         signals[currentGreen].green = predict_green_time
         signals[currentGreen].yellow = defaultYellow
         signals[currentGreen].red = defaultRed
-        print('1')
-        
-        # Check for special vehicle and adjust next green accordingly
+
     check_for_special_vehicle, vehicle_direct = check_for_firetruck(get_vehicle_inZone())
     if check_for_special_vehicle == 1:
-        if (vehicle_direct == 'right' or vehicle_direct == 'left') and currentGreen == 1 and signals[currentGreen].red >= 0:
+        if (vehicle_direct in ['right', 'left']) and currentGreen == 1 and signals[currentGreen].red >= 0:
             nextGreen = 0
-            return nextGreen
-        elif (vehicle_direct == 'up' or vehicle_direct == 'down') and currentGreen == 0 and signals[currentGreen].red >= 0:
+        elif (vehicle_direct in ['up', 'down']) and currentGreen == 0 and signals[currentGreen].red >= 0:
             nextGreen = 1
-            return nextGreen
-    
-    currentGreen = nextGreen  # set next signal as green signal
-    nextGreen = (currentGreen + 1) % noOfSignals    # set next green signal
-    signals[nextGreen].red = signals[currentGreen].yellow + signals[currentGreen].green    # set the red time of next to next signal as (yellow time + green time) of next signal
+
+    currentGreen = nextGreen
+    nextGreen = (currentGreen + 1) % noOfSignals
+    signals[nextGreen].red = signals[currentGreen].yellow + signals[currentGreen].green
+
     repeat()
+
  
 
-# Update values of the signal timers after every second
 def updateValues():
     for i in range(0, noOfSignals):
-        check_for_special_vvehicle, vehicle_direct = check_for_firetruck(get_vehicle_inZone())
-        if check_for_special_vvehicle == 1:
+        check_for_special_vehicle, _ = check_for_firetruck(get_vehicle_inZone())
+        
+        if check_for_special_vehicle == 1:
             break
-
-        if(i==currentGreen):
-            if(currentYellow==0):
-                signals[i].green-=1
-            else:
-                signals[i].yellow-=1
+        
+        if i == currentGreen:
+            signals[i].green -= 1 if currentYellow == 0 else 0
+            signals[i].yellow -= 1 if currentYellow != 0 else 0
         else:
-            signals[i].red-=1
+            signals[i].red -= 1
 
-# Generating vehicles in the simulation
 def generateVehicles():
     random.seed(42)
 
@@ -617,99 +581,38 @@ def generateVehicles():
         dist_vehicle_firetruck,            
         dist_vehicle_van,
         dist_vehicle_bicycle,        
-        ]
+    ]
 
-    distributed_of_vehicle = []
+    distributed_of_vehicle = [sum(distance_increments[:i+1]) for i in range(len(distance_increments))]
 
-    for i in range(len(distance_increments)):
-        if i == 0:
-            distributed_of_vehicle.append(distance_increments[i])
-        else:
-            distributed_of_vehicle.append(distributed_of_vehicle[-1] + distance_increments[i])
-    while(True):
-        angle = 0
-        
+    while True:
+        randNum_direction = random.randint(0, 99)
+        randNum_vehicle = random.randint(0, distributed_of_vehicle[-1] - 1)
 
-        randNum_direction = random.randint(0,99)
-        direction_number = 0
-        dist_direction = [25,50,75,100]
-
-        if(randNum_direction<dist_direction[0]):
+        if randNum_direction < 25:
             direction_number = 0
             angle = 0
-
-        elif(randNum_direction<dist_direction[1]):
+        elif randNum_direction < 50:
             direction_number = 1
             angle = 270
-
-        elif(randNum_direction<dist_direction[2]):
+        elif randNum_direction < 75:
             direction_number = 2
             angle = 180
-
-        elif(randNum_direction<dist_direction[3]):
+        else:
             direction_number = 3
             angle = 90
 
+        for i, dist in enumerate(distributed_of_vehicle):
+            if randNum_vehicle < dist:
+                vehicletype = vehicleTypes[i]
+                vehiclesize = vehicleSizes[i]
+                break
 
-        # vehicleTypes = {0:'car', 1:'bus', 2:'truck', 3:'bike',4:'container',5:'firetruck',6:'van',7:'bicycle'}
-        # distributed_of_vehicle = [50,70,100,150,160,165,195,200] # default distribution of vehicles
-
-
-        randNum_vehicle = random.randint(0,(distributed_of_vehicle[-1]-1))
-    
-        if (randNum_vehicle < distributed_of_vehicle[0]):
-            vehicletype = vehicleTypes[0]
-            vehiclesize = vehicleSizes[0]
-            lane_number = random.randint(0,1)
-        
-
-        elif (randNum_vehicle < distributed_of_vehicle[1]):
-            vehicletype = vehicleTypes[1]
-            vehiclesize = vehicleSizes[1]
-            lane_number = random.randint(0,1)
-
-
-        elif (randNum_vehicle < distributed_of_vehicle[2]):
-            vehicletype = vehicleTypes[2]
-            vehiclesize = vehicleSizes[2]
-            lane_number = random.randint(0,1)
-
-
-        elif (randNum_vehicle < distributed_of_vehicle[3]):
-            vehicletype = vehicleTypes[3]
-            vehiclesize = vehicleSizes[3]
-            lane_number = random.randint(0,3)
-
-
-        elif (randNum_vehicle < distributed_of_vehicle[4]):
-            vehicletype = vehicleTypes[4]
-            vehiclesize = vehicleSizes[4]
-            lane_number = random.randint(0,1)
-
-
-        elif (randNum_vehicle < distributed_of_vehicle[5]):
-            vehicletype = vehicleTypes[5]
-            vehiclesize = vehicleSizes[5]
-            lane_number = random.randint(0,1)
-
-
-        elif (randNum_vehicle < distributed_of_vehicle[6]):
-            vehicletype = vehicleTypes[6]
-            vehiclesize = vehicleSizes[6]
-            lane_number = random.randint(0,1)
-
-
-        elif (randNum_vehicle < distributed_of_vehicle[7]):
-            vehicletype = vehicleTypes[7]
-            vehiclesize = vehicleSizes[7]
-            lane_number = random.randint(0,1)
-
+        lane_number = random.randint(0, 1) if i in [0, 1, 2, 4, 5, 6] else random.randint(0, 3)
 
         Vehicle(lane_number, vehicletype, direction_number, directionNumbers[direction_number], angle,vehiclesize)
 
         time.sleep(0.1)
-
-
         
 class Main:
     def __init__(self):
@@ -717,22 +620,18 @@ class Main:
         self.thread1.daemon = True
         self.thread1.start()
 
-        # Colours 
         self.black = (0, 0, 0)
         self.white = (255, 255, 255)
 
-        # Screensize 
         self.screenWidth = 1400
         self.screenHeight = 800
         self.screenSize = (self.screenWidth, self.screenHeight)
 
-        # Setting background image i.e. image of intersection
         self.background = pygame.image.load('images/best_cr.png')
 
         self.screen = pygame.display.set_mode(self.screenSize)
         pygame.display.set_caption("SIMULATION")
 
-        # Loading signal images and font
         self.redSignal = pygame.image.load('images/signals/red.png')
         self.yellowSignal = pygame.image.load('images/signals/yellow.png')
         self.greenSignal = pygame.image.load('images/signals/green.png')
@@ -750,15 +649,15 @@ class Main:
         while True:
             elapsed_time = time.time() - self.start_time
             if elapsed_time > self.run_time:
-                print("Simulation has run for 5 minutes. Exiting...")
+                print(f"Simulation has run for {self.run_time/60} minutes. Exiting...")
                 print('Vehicle throughput:', vehicle_throughput)
                 break
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
 
-            self.screen.blit(self.background, (0, 0))  # display background in simulation
-            for i in range(0, noOfSignals):  # display signal and set timer according to current status: green, yellow, or red
+            self.screen.blit(self.background, (0, 0)) 
+            for i in range(0, noOfSignals):  
                 if i == currentGreen:
                     if currentYellow == 1:
                         signals[i].signalText = signals[i].yellow
@@ -778,13 +677,11 @@ class Main:
 
             signalTexts = ["", "", "", ""]
 
-            # display signal timer
             for i in range(0, noOfSignals):
                 signalTexts[i] = self.font.render(str(signals[i].signalText), True, self.white, self.black)
                 self.screen.blit(signalTexts[i], signalTimerCoods[i])
                 self.screen.blit(signalTexts[i], signalTimerCoods[i + 2])
 
-            # display the vehicles
             for vehicle in simulation:
                 self.screen.blit(vehicle.image, [vehicle.x, vehicle.y])
                 vehicle.move()
