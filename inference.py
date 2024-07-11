@@ -8,7 +8,7 @@ import os
 class Vehicle_Detection:
     def __init__(self):
         self.model = MODEL
-        self.__fourcc = cv2.VideoWriter_fourcc(*'H264')
+        self.__fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         
     def image_inference(self, image, vehicle_conf):
         self.model.conf = vehicle_conf
@@ -40,9 +40,11 @@ class Vehicle_Detection:
 
         return f"data:image/jpeg;base64,{jpg_as_text.decode('utf-8')}"
     
-    def base64_video_inference(self, base64_video_data, output_video_path, vehicle_conf):
+    def base64_video_inference(self, base64_video_data, output_folder, vehicle_conf):
         encoded_data = str(base64_video_data).split(',')[1]
         decoded = base64.b64decode(encoded_data)
+        output_video_path = output_folder + '/result.mp4'
+        output_video_path_temp = output_folder + '/result_temp.mp4'
         
         with tempfile.NamedTemporaryFile() as temp:
             temp.write(decoded)
@@ -63,6 +65,10 @@ class Vehicle_Detection:
 
         cap.release()
         out.release()
+        
+        os.system(f'ffmpeg -i {output_video_path} -vcodec libx264 -movflags faststart -acodec aac -strict experimental {output_video_path_temp}')
+        os.rename(output_video_path_temp, output_video_path)
+
         return output_video_path
     
     def video_to_base64(self, file_path):
@@ -97,7 +103,4 @@ class Vehicle_Detection:
         if os.path.exists(file_path):
             os.remove(file_path)
 
-
-if __name__ =='__main__':
-    video = 'sample_result/base64_video.mp4'
     

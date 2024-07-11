@@ -60,17 +60,10 @@ class RoadAnalysis:
     def calculate_total_bounding_box_area(self, image):
         total_bounding_box_area = 0
         image = cv2.bitwise_and(image,image, mask=self.mask)
-        #height, width, _ = image.shape
 
         blue_color = np.array([255, 0, 0])
         blue_pixels = np.all(image == blue_color, axis=-1)
         total_bounding_box_area = np.sum(blue_pixels)
-
-        '''for y in range(height):
-            for x in range(width):
-                pixel_value = image[y, x]
-                if np.all(pixel_value == [255, 0, 0]):
-                    total_bounding_box_area += 1'''
 
         return total_bounding_box_area
 
@@ -81,8 +74,8 @@ class RoadAnalysis:
         return ratio
     
     def find_zone_shape(self):
-        height = abs(min(self.top_left[1], self.top_right[1]) - min(self.bottom_left[1], self.bottom_right[1]))
-        width = abs(min(self.top_left[0], self.bottom_left[0]) - min(self.top_right[0], self.bottom_right[0]))
+        height = abs(max(self.top_left[1], self.top_right[1]) - min(self.bottom_left[1], self.bottom_right[1]))
+        width = abs(max(self.top_left[0], self.bottom_left[0]) - min(self.top_right[0], self.bottom_right[0]))
 
         if height > width:
             self.is_vertical = True

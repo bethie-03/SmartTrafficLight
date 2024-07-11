@@ -36,7 +36,7 @@ def process_video():
     if 'video' in request.form:
         file = request.form['video']
         vehicle_cfd = request.form['vehicle_cfd']
-        file_path = VD.base64_video_inference(file, 'sample_result/result.mp4', float(vehicle_cfd))
+        file_path = VD.base64_video_inference(file, 'sample_result', float(vehicle_cfd))
         result = VD.video_to_base64(file_path)
         return {"result": result}
     
