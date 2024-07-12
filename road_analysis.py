@@ -302,3 +302,4 @@ class RoadAnalysis:
         jpg_as_text = base64.b64encode(buffer)
         self.bboxes = []
         return f"data:image/jpeg;base64,{jpg_as_text.decode('utf-8')}", input_value, green_light_time, time
+    
