@@ -8,12 +8,12 @@ import subprocess
 import joblib
 import numpy as np
 import cv2
-from configs import POLY_REG_MODEL_PATH
+from configs import SCALER, MLP_REG_MODEL
 import os
 import warnings
 warnings.filterwarnings("ignore")
 
-model = joblib.load(POLY_REG_MODEL_PATH)
+model = MLP_REG_MODEL
 random.seed(42)
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
@@ -479,11 +479,12 @@ def prepare_input_data(ratios, number_vehices_inZone, direction):
     
     vehicle_counts = [number_vehices_inZone[direction].get(vtype, 0) for vtype in vehicle_types]
     
-    input_data = np.array([[ratio_value] + vehicle_counts])
-
+    input_data = [ratio_value] + vehicle_counts
     return input_data
+
 def predict_traffic_light_time(input_data):
-    predicted_time = model.predict(input_data)
+    input_data_scaled = SCALER.transform([input_data])
+    predicted_time = model.predict(input_data_scaled)
     return predicted_time[0]
 
 def check_for_firetruck(vehicles_InDetectZone):

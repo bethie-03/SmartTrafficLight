@@ -15,7 +15,7 @@ class RoadAnalysis:
         self.mask_image = None
         self.points_array_list = None
         self.is_vertical = None
-        self.polynomial_reg_model = POLYNOMIAL_REG_MODEL
+        self.mlp_reg_model = MLP_REG_MODEL
         
     def base64_image_decode(self, base64_image_data):
         encoded_data = str(base64_image_data).split(',')[1]
@@ -215,8 +215,9 @@ class RoadAnalysis:
     
     def predict_green_light_time(self, ratio):
         input_value = self.count_label(ratio)
-        input_value_array = np.array([input_value])
-        green_light_time = np.round(self.polynomial_reg_model.predict(input_value_array),2)
+        #input_value_array = np.array([input_value])
+        input_value_scaled = SCALER.transform([input_value])
+        green_light_time = np.round(self.mlp_reg_model.predict(input_value_scaled),2)
         return input_value, green_light_time
             
     def road_analyse(self, 
@@ -295,4 +296,3 @@ class RoadAnalysis:
         jpg_as_text = base64.b64encode(buffer)
         self.bboxes = []
         return f"data:image/jpeg;base64,{jpg_as_text.decode('utf-8')}", input_value, green_light_time, time
-    
