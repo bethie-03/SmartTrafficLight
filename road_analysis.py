@@ -6,6 +6,7 @@ import base64
 class RoadAnalysis:
     def __init__(self):
         self.model = MODEL      
+        self.model.conf = 0.1
         self.bboxes = []
         self.top_left = None
         self.top_right = None
